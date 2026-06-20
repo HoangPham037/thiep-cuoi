@@ -8,7 +8,7 @@ const wedding = {
   groomParents: "Con ông bà ...",
   brideParents: "Con ông bà ...",
   contactEmail: "",
-  musicSrc: "assets/music/Beautiful%20In%20White.mp3",
+  musicSrc: "assets/music/beautiful-in-white.mp3",
   events: [
     {
       title: "Lễ thành hôn",
@@ -75,9 +75,9 @@ function initContent() {
 function initCover() {
   const cover = $("#cover");
   $("#openInvite").addEventListener("click", () => {
+    playWeddingMusic();
     cover.classList.add("is-hidden");
     document.body.style.overflow = "";
-    playWeddingMusic();
   });
   document.body.style.overflow = "hidden";
 }
@@ -212,12 +212,17 @@ function initRsvp() {
 
 function initMusicButton() {
   const button = $("#musicToggle");
+  weddingAudio = $("#weddingAudio");
   if (!wedding.musicSrc) {
     button.hidden = true;
     return;
   }
 
-  weddingAudio = new Audio(wedding.musicSrc);
+  if (!weddingAudio) {
+    weddingAudio = new Audio(wedding.musicSrc);
+  }
+
+  weddingAudio.src = wedding.musicSrc;
   weddingAudio.loop = true;
   weddingAudio.preload = "auto";
   button.addEventListener("click", async (event) => {
@@ -242,11 +247,11 @@ async function playWeddingMusic() {
 }
 
 initContent();
+initMusicButton();
 initCover();
 initCountdown();
 initEvents();
 initGallery();
 initGallerySlider();
 initRsvp();
-initMusicButton();
 initScrollAnimations();
