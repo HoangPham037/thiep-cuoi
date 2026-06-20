@@ -125,12 +125,62 @@ function initGallery() {
   $("#galleryGrid").innerHTML = wedding.gallery
     .map(
       (name, index) => `
-        <a href="assets/images/${name}.webp" target="_blank" rel="noreferrer" aria-label="Xem ảnh cưới ${index + 1}">
+        <a class="gallery__slide" href="assets/images/${name}.webp" target="_blank" rel="noreferrer" aria-label="Xem ảnh cưới ${index + 1}">
           <img src="assets/images/${name}-thumb.webp" alt="Ảnh cưới ${index + 1}" loading="lazy" />
         </a>
       `
     )
     .join("");
+}
+
+function initGallerySlider() {
+  const viewport = $("#galleryViewport");
+  const prev = $("#galleryPrev");
+  const next = $("#galleryNext");
+  const scrollBySlide = (direction) => {
+    viewport.scrollBy({
+      left: direction * Math.max(260, viewport.clientWidth * 0.82),
+      behavior: "smooth",
+    });
+  };
+
+  prev.addEventListener("click", () => scrollBySlide(-1));
+  next.addEventListener("click", () => scrollBySlide(1));
+}
+
+function initScrollAnimations() {
+  const targets = [
+    ".section__title",
+    ".intro__card",
+    ".intro__photo",
+    ".countdown__item",
+    ".person",
+    ".event-card",
+    ".quote div",
+    ".gallery__shell",
+    ".rsvp__form",
+    ".footer",
+  ];
+  const elements = targets.flatMap((selector) => Array.from(document.querySelectorAll(selector)));
+
+  elements.forEach((element, index) => {
+    element.classList.add("reveal");
+    element.style.setProperty("--reveal-delay", `${Math.min(index % 4, 3) * 90}ms`);
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+  );
+
+  elements.forEach((element) => observer.observe(element));
 }
 
 function initRsvp() {
@@ -183,5 +233,7 @@ initCover();
 initCountdown();
 initEvents();
 initGallery();
+initGallerySlider();
 initRsvp();
 initMusicButton();
+initScrollAnimations();

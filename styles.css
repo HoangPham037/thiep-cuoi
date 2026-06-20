@@ -187,6 +187,18 @@ a {
   backdrop-filter: blur(10px);
 }
 
+.reveal {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .section {
   padding: clamp(64px, 9vw, 118px) clamp(18px, 5vw, 72px);
 }
@@ -375,22 +387,78 @@ a {
   line-height: 1.14;
 }
 
-.gallery__grid {
-  columns: 3 260px;
-  column-gap: 16px;
+.gallery__shell {
   max-width: 1180px;
   margin: 0 auto;
 }
 
-.gallery__grid a {
-  display: block;
-  break-inside: avoid;
+.gallery__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
   margin-bottom: 16px;
-  overflow: hidden;
+}
+
+.gallery__button {
+  min-width: 78px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--accent-dark);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.gallery__button:hover {
+  background: var(--accent);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.gallery__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--paper-strong);
+}
+
+.gallery__viewport::-webkit-scrollbar {
+  height: 8px;
+}
+
+.gallery__viewport::-webkit-scrollbar-track {
   background: var(--paper-strong);
 }
 
+.gallery__viewport::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.gallery__grid {
+  display: flex;
+  gap: 16px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 4px 2px 18px;
+}
+
+.gallery__grid a {
+  flex: 0 0 clamp(230px, 32vw, 380px);
+  display: block;
+  overflow: hidden;
+  background: var(--paper-strong);
+  scroll-snap-align: start;
+}
+
 .gallery__grid img {
+  aspect-ratio: 4 / 5;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.5s ease;
 }
 
@@ -520,5 +588,25 @@ a {
 
   .quote {
     min-height: 58vh;
+  }
+
+  .gallery__actions {
+    justify-content: center;
+  }
+
+  .gallery__grid a {
+    flex-basis: min(78vw, 330px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
