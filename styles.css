@@ -311,33 +311,6 @@ a {
   object-fit: cover;
 }
 
-.countdown {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  padding-top: 0;
-  padding-bottom: 0;
-  background: rgba(234, 211, 196, 0.88);
-}
-
-.countdown__item {
-  padding: clamp(22px, 4vw, 42px) 10px;
-  background:
-    linear-gradient(180deg, rgba(255, 250, 244, 0.95), rgba(247, 232, 220, 0.95));
-  text-align: center;
-}
-
-.countdown__item strong {
-  display: block;
-  font-family: var(--serif);
-  font-size: clamp(34px, 7vw, 76px);
-  line-height: 1;
-}
-
-.countdown__item span {
-  color: var(--muted);
-}
-
 .couple {
   display: grid;
   gap: 34px;
@@ -365,39 +338,207 @@ a {
 }
 
 .events {
+  position: relative;
+  overflow: hidden;
   background:
-    radial-gradient(circle at 12% 16%, rgba(181, 121, 114, 0.1), transparent 24%),
-    linear-gradient(180deg, rgba(255, 253, 249, 0.9), rgba(255, 248, 241, 0.94));
+    radial-gradient(circle at 12% 20%, rgba(82, 113, 67, 0.15), transparent 23%),
+    radial-gradient(circle at 86% 16%, rgba(213, 175, 120, 0.16), transparent 22%),
+    linear-gradient(180deg, rgba(255, 253, 249, 0.9), rgba(255, 248, 241, 0.96));
 }
 
-.event-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  max-width: 1040px;
+.events::before,
+.events::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 48% 52% 42% 58%;
+  background: rgba(82, 113, 67, 0.09);
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+
+.events::before {
+  left: -130px;
+  bottom: -120px;
+  transform: rotate(-26deg);
+}
+
+.events::after {
+  top: -150px;
+  right: -110px;
+  background: rgba(213, 175, 120, 0.11);
+  transform: rotate(22deg);
+}
+
+.wedding-info__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
   margin: 0 auto;
+  color: var(--leaf);
+  text-align: center;
 }
 
-.event-card {
-  padding: 28px;
-  border: 1px solid var(--line);
-  background: var(--paper);
-}
-
-.event-card h3 {
-  margin: 0 0 10px;
+.wedding-info__heading h2 {
+  margin: 0 0 22px;
   font-family: var(--serif);
-  font-size: 34px;
+  font-size: clamp(30px, 5vw, 48px);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.wedding-info__heading p {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 34px);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.wedding-info__time {
+  margin: 26px 0 24px;
+  font-family: var(--serif);
+  font-size: clamp(34px, 6vw, 54px);
   font-weight: 600;
 }
 
-.event-card p {
-  margin: 8px 0;
-  color: var(--muted);
+.wedding-info__date {
+  display: inline-grid;
+  grid-template-columns: minmax(92px, auto) auto minmax(92px, auto);
+  align-items: center;
+  gap: clamp(14px, 4vw, 28px);
+  margin-bottom: 22px;
+  color: var(--leaf);
 }
 
-.event-card .button {
-  margin-top: 18px;
+.wedding-info__date span {
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.6vw, 24px);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.wedding-info__date strong {
+  min-width: 78px;
+  padding: 0 clamp(18px, 3vw, 28px);
+  border-right: 2px solid rgba(82, 113, 67, 0.72);
+  border-left: 2px solid rgba(82, 113, 67, 0.72);
+  font-family: var(--serif);
+  font-size: clamp(46px, 8vw, 72px);
+  line-height: 1;
+}
+
+.wedding-info__year {
+  margin: 0 0 18px;
+  font-family: var(--serif);
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 500;
+}
+
+.wedding-info__lunar {
+  margin: 0 0 34px;
+  font-family: var(--serif);
+  font-size: clamp(15px, 2vw, 20px);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.wedding-info__times {
+  display: flex;
+  justify-content: center;
+  gap: clamp(34px, 8vw, 78px);
+  margin-bottom: 34px;
+}
+
+.wedding-info__times div {
+  display: grid;
+  gap: 6px;
+}
+
+.wedding-info__times span {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wedding-info__times strong {
+  font-family: var(--serif);
+  font-size: 28px;
+}
+
+.wedding-info__countdown {
+  margin-bottom: 28px;
+}
+
+.wedding-info__countdown p {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.wedding-info__countdown strong {
+  font-weight: 400;
+}
+
+.calendar {
+  width: min(100%, 320px);
+  margin: 0 auto;
+  border: 1px solid rgba(82, 113, 67, 0.34);
+  border-radius: 10px;
+  background: rgba(255, 253, 249, 0.62);
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+}
+
+.calendar__title {
+  padding: 14px 10px;
+  border-bottom: 1px solid rgba(82, 113, 67, 0.26);
+  font-weight: 700;
+}
+
+.calendar__weekdays,
+.calendar__days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar__weekdays {
+  border-bottom: 1px solid rgba(82, 113, 67, 0.18);
+  color: rgba(82, 113, 67, 0.72);
+  font-size: 12px;
+}
+
+.calendar__weekdays span,
+.calendar__cell {
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+}
+
+.calendar__cell {
+  position: relative;
+  z-index: 0;
+  font-size: 15px;
+}
+
+.calendar__cell.is-active {
+  color: white;
+  font-weight: 700;
+}
+
+.calendar__cell.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--leaf);
 }
 
 .quote {
@@ -701,8 +842,7 @@ a {
 
   .intro__grid,
   .person,
-  .person--reverse,
-  .event-list {
+  .person--reverse {
     grid-template-columns: 1fr;
   }
 
@@ -710,8 +850,26 @@ a {
     order: 0;
   }
 
-  .countdown {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .wedding-info__date {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .wedding-info__date strong {
+    justify-self: center;
+    border-right: 0;
+    border-left: 0;
+    border-top: 2px solid rgba(82, 113, 67, 0.72);
+    border-bottom: 2px solid rgba(82, 113, 67, 0.72);
+    padding: 8px 24px;
+  }
+
+  .wedding-info__lunar {
+    letter-spacing: 0.14em;
+  }
+
+  .wedding-info__times {
+    gap: 28px;
   }
 
   .quote {

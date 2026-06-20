@@ -77,13 +77,6 @@
         </div>
       </section>
 
-      <section class="section countdown" aria-label="Đếm ngược ngày cưới">
-        <div class="countdown__item"><strong id="days">00</strong><span>Ngày</span></div>
-        <div class="countdown__item"><strong id="hours">00</strong><span>Giờ</span></div>
-        <div class="countdown__item"><strong id="minutes">00</strong><span>Phút</span></div>
-        <div class="countdown__item"><strong id="seconds">00</strong><span>Giây</span></div>
-      </section>
-
       <section class="section couple">
         <div class="person">
           <img src="assets/images/PQT01410-.webp" alt="Chú rể" loading="lazy" />
@@ -103,12 +96,47 @@
         </div>
       </section>
 
-      <section class="section events" id="events">
-        <div class="section__title">
-          <p class="eyebrow">Wedding event</p>
-          <h2>Thông tin buổi lễ</h2>
+      <section class="section events wedding-info" id="events">
+        <div class="wedding-info__inner">
+          <div class="wedding-info__heading">
+            <h2>Thông tin tiệc cưới</h2>
+            <p>Tiệc cưới sẽ diễn ra vào lúc:</p>
+          </div>
+
+          <p class="wedding-info__time" id="partyTime">11:00</p>
+
+          <div class="wedding-info__date">
+            <span id="eventWeekday">Thứ hai</span>
+            <strong id="eventDay">01</strong>
+            <span id="eventMonth">Tháng 01</span>
+          </div>
+
+          <p class="wedding-info__year" id="eventYear">2027</p>
+          <p class="wedding-info__lunar" id="lunarDate">(Tức ngày ...)</p>
+
+          <div class="wedding-info__times">
+            <div>
+              <span>Đón khách</span>
+              <strong id="guestTime">10:30</strong>
+            </div>
+            <div>
+              <span>Khai tiệc</span>
+              <strong id="startTime">11:00</strong>
+            </div>
+          </div>
+
+          <div class="wedding-info__countdown">
+            <p>Cùng đếm ngược</p>
+            <strong>
+              <span id="days">00</span> ngày
+              <span id="hours">00</span> giờ
+              <span id="minutes">00</span> phút
+              <span id="seconds">00</span> giây
+            </strong>
+          </div>
+
+          <div class="calendar" id="weddingCalendar" aria-label="Lịch tháng cưới"></div>
         </div>
-        <div class="event-list" id="eventList"></div>
       </section>
 
       <section class="quote">

@@ -3,6 +3,9 @@ const wedding = {
   bride: "Cô dâu",
   date: "2027-01-01T11:00:00+07:00",
   displayDate: "Chủ nhật, 01.01.2027",
+  guestTime: "10:30",
+  startTime: "11:00",
+  lunarDate: "(Tức ngày ...)",
   inviteText:
     "Gia đình chúng tôi trân trọng kính mời bạn đến dự tiệc cưới, cùng chia sẻ niềm vui và gửi lời chúc phúc cho đôi uyên ương.",
   groomParents: "Con ông bà ...",
@@ -109,19 +112,45 @@ function initCountdown() {
 }
 
 function initEvents() {
-  $("#eventList").innerHTML = wedding.events
-    .map(
-      (event) => `
-        <article class="event-card">
-          <h3>${event.title}</h3>
-          <p><strong>Thời gian:</strong> ${event.time}</p>
-          <p><strong>Địa điểm:</strong> ${event.place}</p>
-          <p>${event.address}</p>
-          <a class="button" href="${event.map}" target="_blank" rel="noreferrer">Xem bản đồ</a>
-        </article>
-      `
-    )
-    .join("");
+  const weekdays = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
+  const month = weddingDate.getMonth() + 1;
+  const year = weddingDate.getFullYear();
+
+  setText("#partyTime", wedding.startTime);
+  setText("#eventWeekday", weekdays[weddingDate.getDay()]);
+  setText("#eventDay", String(weddingDate.getDate()).padStart(2, "0"));
+  setText("#eventMonth", `Tháng ${String(month).padStart(2, "0")}`);
+  setText("#eventYear", String(year));
+  setText("#lunarDate", wedding.lunarDate);
+  setText("#guestTime", wedding.guestTime);
+  setText("#startTime", wedding.startTime);
+
+  renderWeddingCalendar(year, month - 1, weddingDate.getDate());
+}
+
+function renderWeddingCalendar(year, monthIndex, activeDay) {
+  const calendar = $("#weddingCalendar");
+  const weekdays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+  const firstDay = new Date(year, monthIndex, 1);
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const startOffset = (firstDay.getDay() + 6) % 7;
+  const cells = [];
+
+  for (let i = 0; i < startOffset; i += 1) {
+    cells.push('<span class="calendar__cell calendar__cell--empty"></span>');
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    cells.push(
+      `<span class="calendar__cell${day === activeDay ? " is-active" : ""}">${day}</span>`
+    );
+  }
+
+  calendar.innerHTML = `
+    <div class="calendar__title">Tháng ${monthIndex + 1} / ${year}</div>
+    <div class="calendar__weekdays">${weekdays.map((day) => `<span>${day}</span>`).join("")}</div>
+    <div class="calendar__days">${cells.join("")}</div>
+  `;
 }
 
 function initGallery() {
@@ -227,9 +256,15 @@ function initScrollAnimations() {
     ".section__title",
     ".intro__card",
     ".intro__photo",
-    ".countdown__item",
     ".person",
-    ".event-card",
+    ".wedding-info__heading",
+    ".wedding-info__time",
+    ".wedding-info__date",
+    ".wedding-info__year",
+    ".wedding-info__lunar",
+    ".wedding-info__times",
+    ".wedding-info__countdown",
+    ".calendar",
     ".quote div",
     ".gallery__shell",
     ".rsvp__form",
