@@ -943,6 +943,97 @@ a {
   text-align: center;
 }
 
+.moments {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 253, 249, 0.9), rgba(255, 253, 249, 0.9)),
+    repeating-linear-gradient(0deg, rgba(41, 79, 31, 0.035) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(90deg, rgba(41, 79, 31, 0.035) 0 1px, transparent 1px 96px),
+    linear-gradient(180deg, #fff8f1 0%, #fffdf9 100%);
+}
+
+.moments::before {
+  content: "";
+  position: absolute;
+  top: 86px;
+  left: max(18px, calc((100vw - 1040px) / 2));
+  width: 250px;
+  height: 250px;
+  border: 1px solid rgba(41, 79, 31, 0.08);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 22px rgba(41, 79, 31, 0.018), inset 0 0 0 46px rgba(41, 79, 31, 0.018);
+  pointer-events: none;
+  transform: translateX(-46%) scale(0.72);
+}
+
+.moments__title {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+
+.moments__title h2 {
+  color: var(--leaf);
+  font-size: clamp(35px, 6vw, 64px);
+  font-style: italic;
+  line-height: 1.12;
+}
+
+.moments__title h2::after {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 4px;
+  margin: 20px auto 0;
+  border-radius: 999px;
+  background: rgba(41, 79, 31, 0.72);
+}
+
+.moments__title p {
+  max-width: 660px;
+  margin: 24px auto 0;
+  color: rgba(41, 79, 31, 0.7);
+  font-size: clamp(17px, 2.5vw, 24px);
+  line-height: 1.55;
+}
+
+.moments__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(18px, 3vw, 28px);
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.moments__item {
+  min-height: 280px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(255, 253, 249, 0.78);
+  box-shadow: 0 22px 48px rgba(41, 79, 31, 0.1);
+}
+
+.moments__item--wide {
+  grid-column: 1 / -1;
+  min-height: clamp(320px, 52vw, 560px);
+}
+
+.moments__item img {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+
+.moments__item:hover img {
+  transform: scale(1.035);
+}
+
 .quote {
   position: relative;
   min-height: 72vh;
@@ -1335,6 +1426,16 @@ a {
   .journey__icon {
     width: 48px;
     height: 48px;
+  }
+
+  .moments__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .moments__item,
+  .moments__item--wide {
+    grid-column: auto;
+    min-height: min(78vw, 390px);
   }
 
   .quote {

@@ -308,6 +308,8 @@ function initScrollAnimations() {
     ".journey__title",
     ".journey__item",
     ".journey__quote",
+    ".moments__title",
+    ".moments__item",
     ".quote div",
     ".gallery__shell",
     ".rsvp__form",
