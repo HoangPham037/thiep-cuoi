@@ -27,6 +27,7 @@ const wedding = {
   contactEmail: "",
   musicSrc: "assets/music/beautiful-in-white.mp3",
   rsvpEndpoint: "",
+  adminKey: "",
   venueName: "Nhà Văn Hoá Xóm Thanh Đức",
   venueAddress:
     "Nhà văn hoá xóm Thanh Đức, xã Hạnh Lâm, tỉnh Nghệ An|Địa chỉ cũ: Nhà văn hoá xóm 1, xã Thanh Đức, huyện Thanh Chương, tỉnh Nghệ An",
@@ -402,8 +403,9 @@ function initRsvp() {
   const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
   const adminPanel = $("#adminRsvpPanel");
   adminPanel.hidden = !isAdminMode;
+  let currentResponses = [];
 
-  const getResponses = () => JSON.parse(localStorage.getItem(RSVP_STORAGE_KEY) || "[]");
+  const getLocalResponses = () => JSON.parse(localStorage.getItem(RSVP_STORAGE_KEY) || "[]");
   const saveResponses = (responses) =>
     localStorage.setItem(RSVP_STORAGE_KEY, JSON.stringify(responses));
   const escapeHtml = (value) =>
@@ -414,13 +416,87 @@ function initRsvp() {
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
   const updateSummary = () => {
-    const responses = getResponses();
+    const responses = currentResponses;
     const attending = responses.filter((item) => item.attend === "Có tham dự").length;
     const absent = responses.length - attending;
     $("#rsvpSummary").textContent = responses.length
       ? `Đã lưu ${responses.length} phản hồi trên thiết bị này: ${attending} tham dự, ${absent} không tham dự.`
       : "Chưa có phản hồi nào được lưu trên thiết bị này.";
   };
+  const loadRemoteResponses = () =>
+    new Promise((resolve, reject) => {
+      if (!wedding.rsvpEndpoint) {
+        resolve(getLocalResponses());
+        return;
+      }
+
+      const callbackName = `handleRsvp_${Date.now()}`;
+      const script = document.createElement("script");
+      const separator = wedding.rsvpEndpoint.includes("?") ? "&" : "?";
+      const url = `${wedding.rsvpEndpoint}${separator}action=list&key=${encodeURIComponent(
+        wedding.adminKey
+      )}&callback=${callbackName}`;
+
+      window[callbackName] = (result) => {
+        delete window[callbackName];
+        script.remove();
+        if (result?.ok) resolve(result.data || []);
+        else reject(new Error(result?.error || "Không tải được dữ liệu RSVP."));
+      };
+
+      script.onerror = () => {
+        delete window[callbackName];
+        script.remove();
+        reject(new Error("Không kết nối được endpoint RSVP."));
+      };
+
+      script.src = url;
+      document.body.appendChild(script);
+    });
+  const refreshResponses = async () => {
+    try {
+      currentResponses = await loadRemoteResponses();
+      if (!wedding.rsvpEndpoint) currentResponses = getLocalResponses();
+      updateSummary();
+      return currentResponses;
+    } catch (error) {
+      currentResponses = getLocalResponses();
+      updateSummary();
+      $("#formNote").textContent = error.message;
+      return currentResponses;
+    }
+  };
+  const clearRemoteResponses = () =>
+    new Promise((resolve, reject) => {
+      if (!wedding.rsvpEndpoint) {
+        localStorage.removeItem(RSVP_STORAGE_KEY);
+        resolve();
+        return;
+      }
+
+      const callbackName = `clearRsvp_${Date.now()}`;
+      const script = document.createElement("script");
+      const separator = wedding.rsvpEndpoint.includes("?") ? "&" : "?";
+      const url = `${wedding.rsvpEndpoint}${separator}action=clear&key=${encodeURIComponent(
+        wedding.adminKey
+      )}&callback=${callbackName}`;
+
+      window[callbackName] = (result) => {
+        delete window[callbackName];
+        script.remove();
+        if (result?.ok) resolve();
+        else reject(new Error(result?.error || "Không xoá được dữ liệu RSVP."));
+      };
+
+      script.onerror = () => {
+        delete window[callbackName];
+        script.remove();
+        reject(new Error("Không kết nối được endpoint RSVP."));
+      };
+
+      script.src = url;
+      document.body.appendChild(script);
+    });
 
   $("#rsvpForm").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -432,10 +508,11 @@ function initRsvp() {
       sentAt: new Date().toISOString(),
     };
 
-    const responses = getResponses();
+    const responses = getLocalResponses();
     responses.push(payload);
     saveResponses(responses);
-    updateSummary();
+    currentResponses = responses;
+    if (isAdminMode && !wedding.rsvpEndpoint) updateSummary();
 
     if (wedding.rsvpEndpoint) {
       fetch(wedding.rsvpEndpoint, {
@@ -450,7 +527,7 @@ function initRsvp() {
 
     $("#formNote").textContent = wedding.rsvpEndpoint
       ? "Cảm ơn bạn, xác nhận tham dự đã được gửi."
-      : "Cảm ơn bạn, lời xác nhận đã được ghi nhận.";
+      : "Cảm ơn bạn, lời xác nhận đã được ghi nhận. Chủ tiệc cần cấu hình hệ thống RSVP để nhận phản hồi từ xa.";
     event.currentTarget.reset();
 
     if (wedding.contactEmail) {
@@ -462,8 +539,10 @@ function initRsvp() {
     }
   });
 
-  $("#exportCsv").addEventListener("click", () => {
-    const responses = getResponses();
+  $("#refreshRsvp").addEventListener("click", refreshResponses);
+
+  $("#exportCsv").addEventListener("click", async () => {
+    const responses = await refreshResponses();
     if (!responses.length) {
       $("#formNote").textContent = "Chưa có dữ liệu để xuất.";
       return;
@@ -487,8 +566,8 @@ function initRsvp() {
     URL.revokeObjectURL(url);
   });
 
-  $("#exportPdf").addEventListener("click", () => {
-    const responses = getResponses();
+  $("#exportPdf").addEventListener("click", async () => {
+    const responses = await refreshResponses();
     if (!responses.length) {
       $("#formNote").textContent = "Chưa có dữ liệu để xuất.";
       return;
@@ -541,13 +620,23 @@ function initRsvp() {
     printWindow.document.close();
   });
 
-  $("#clearRsvp").addEventListener("click", () => {
-    localStorage.removeItem(RSVP_STORAGE_KEY);
-    updateSummary();
-    $("#formNote").textContent = "Đã xoá dữ liệu RSVP lưu trên thiết bị này.";
+  $("#clearRsvp").addEventListener("click", async () => {
+    const confirmed = window.confirm("Bạn chắc chắn muốn xoá toàn bộ phản hồi RSVP?");
+    if (!confirmed) return;
+    try {
+      await clearRemoteResponses();
+      localStorage.removeItem(RSVP_STORAGE_KEY);
+      currentResponses = [];
+      updateSummary();
+      $("#formNote").textContent = "Đã xoá dữ liệu RSVP.";
+    } catch (error) {
+      $("#formNote").textContent = error.message;
+    }
   });
 
+  currentResponses = getLocalResponses();
   updateSummary();
+  if (isAdminMode) refreshResponses();
 }
 
 function initMusicButton() {
