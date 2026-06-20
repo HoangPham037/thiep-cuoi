@@ -117,14 +117,13 @@
           <p class="eyebrow">Our moments</p>
           <h2>Album ảnh cưới</h2>
         </div>
-        <div class="gallery__shell">
-          <div class="gallery__actions" aria-label="Điều khiển album ảnh">
-            <button class="gallery__button" id="galleryPrev" type="button" aria-label="Ảnh trước">Trước</button>
-            <button class="gallery__button" id="galleryNext" type="button" aria-label="Ảnh tiếp theo">Tiếp</button>
-          </div>
+        <div class="gallery__shell" aria-label="Album ảnh cưới dạng trình chiếu">
+          <button class="gallery__button gallery__button--prev" id="galleryPrev" type="button" aria-label="Ảnh trước">‹</button>
           <div class="gallery__viewport" id="galleryViewport">
-            <div class="gallery__grid" id="galleryGrid"></div>
+            <div class="gallery__grid" id="galleryGrid" aria-live="polite"></div>
           </div>
+          <button class="gallery__button gallery__button--next" id="galleryNext" type="button" aria-label="Ảnh tiếp theo">›</button>
+          <p class="gallery__counter" id="galleryCounter">1 / 1</p>
         </div>
       </section>
 

@@ -47,6 +47,7 @@ const $ = (selector) => document.querySelector(selector);
 const names = `${wedding.groom} & ${wedding.bride}`;
 const weddingDate = new Date(wedding.date);
 let weddingAudio;
+let galleryActiveIndex = 1;
 
 function setText(selector, value) {
   const el = $(selector);
@@ -128,7 +129,7 @@ function initGallery() {
     .map(
       (name, index) => `
         <a class="gallery__slide" href="assets/images/${name}.webp" target="_blank" rel="noreferrer" aria-label="Xem ảnh cưới ${index + 1}">
-          <img src="assets/images/${name}-thumb.webp" alt="Ảnh cưới ${index + 1}" loading="lazy" />
+          <img src="assets/images/${name}.webp" alt="Ảnh cưới ${index + 1}" loading="lazy" />
         </a>
       `
     )
@@ -139,15 +140,56 @@ function initGallerySlider() {
   const viewport = $("#galleryViewport");
   const prev = $("#galleryPrev");
   const next = $("#galleryNext");
-  const scrollBySlide = (direction) => {
-    viewport.scrollBy({
-      left: direction * Math.max(260, viewport.clientWidth * 0.82),
-      behavior: "smooth",
-    });
+  const counter = $("#galleryCounter");
+  const slides = Array.from(document.querySelectorAll(".gallery__slide"));
+  let startX = 0;
+
+  const normalizeIndex = (index) => {
+    if (index < 0) return slides.length - 1;
+    if (index >= slides.length) return 0;
+    return index;
   };
 
-  prev.addEventListener("click", () => scrollBySlide(-1));
-  next.addEventListener("click", () => scrollBySlide(1));
+  const updateSlides = () => {
+    slides.forEach((slide, index) => {
+      let offset = index - galleryActiveIndex;
+      if (offset > slides.length / 2) offset -= slides.length;
+      if (offset < -slides.length / 2) offset += slides.length;
+
+      const absOffset = Math.abs(offset);
+      const isVisible = absOffset <= 3;
+      const isActive = offset === 0;
+
+      slide.classList.toggle("is-active", isActive);
+      slide.setAttribute("aria-hidden", String(!isActive));
+      slide.style.setProperty("--offset", offset);
+      slide.style.setProperty("--scale", Math.max(0.62, 1 - absOffset * 0.13));
+      slide.style.setProperty("--opacity", isVisible ? Math.max(0.2, 1 - absOffset * 0.22) : 0);
+      slide.style.setProperty("--depth", 120 - absOffset * 70);
+      slide.style.setProperty("--z", 20 - absOffset);
+      slide.style.setProperty("--saturate", isActive ? 1 : 0.58);
+      slide.style.setProperty("--brightness", isActive ? 1 : 1.08);
+    });
+
+    counter.textContent = `${galleryActiveIndex + 1} / ${slides.length}`;
+  };
+
+  const goTo = (index) => {
+    galleryActiveIndex = normalizeIndex(index);
+    updateSlides();
+  };
+
+  prev.addEventListener("click", () => goTo(galleryActiveIndex - 1));
+  next.addEventListener("click", () => goTo(galleryActiveIndex + 1));
+  viewport.addEventListener("pointerdown", (event) => {
+    startX = event.clientX;
+  });
+  viewport.addEventListener("pointerup", (event) => {
+    const delta = event.clientX - startX;
+    if (Math.abs(delta) > 40) goTo(galleryActiveIndex + (delta < 0 ? 1 : -1));
+  });
+
+  updateSlides();
 }
 
 function initScrollAnimations() {
