@@ -8,7 +8,7 @@ const wedding = {
   groomParents: "Con ông bà ...",
   brideParents: "Con ông bà ...",
   contactEmail: "",
-  musicSrc: "",
+  musicSrc: "assets/music/Beautiful%20In%20White.mp3",
   events: [
     {
       title: "Lễ thành hôn",
@@ -46,6 +46,7 @@ const wedding = {
 const $ = (selector) => document.querySelector(selector);
 const names = `${wedding.groom} & ${wedding.bride}`;
 const weddingDate = new Date(wedding.date);
+let weddingAudio;
 
 function setText(selector, value) {
   const el = $(selector);
@@ -76,6 +77,7 @@ function initCover() {
   $("#openInvite").addEventListener("click", () => {
     cover.classList.add("is-hidden");
     document.body.style.overflow = "";
+    playWeddingMusic();
   });
   document.body.style.overflow = "hidden";
 }
@@ -215,17 +217,28 @@ function initMusicButton() {
     return;
   }
 
-  const audio = new Audio(wedding.musicSrc);
-  audio.loop = true;
+  weddingAudio = new Audio(wedding.musicSrc);
+  weddingAudio.loop = true;
+  weddingAudio.preload = "auto";
   button.addEventListener("click", async (event) => {
-    if (audio.paused) {
-      await audio.play();
-      event.currentTarget.classList.add("is-active");
+    if (weddingAudio.paused) {
+      await playWeddingMusic();
     } else {
-      audio.pause();
+      weddingAudio.pause();
       event.currentTarget.classList.remove("is-active");
     }
   });
+}
+
+async function playWeddingMusic() {
+  if (!weddingAudio) return;
+
+  try {
+    await weddingAudio.play();
+    $("#musicToggle").classList.add("is-active");
+  } catch (error) {
+    $("#musicToggle").classList.remove("is-active");
+  }
 }
 
 initContent();
