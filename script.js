@@ -69,6 +69,7 @@ const names = `${wedding.groom} & ${wedding.bride}`;
 const weddingDate = new Date(wedding.date);
 let weddingAudio;
 let galleryActiveIndex = 1;
+const RSVP_STORAGE_KEY = "wedding-rsvp-list";
 
 function setText(selector, value) {
   const el = $(selector);
@@ -116,6 +117,7 @@ function initCover() {
     playWeddingMusic();
     cover.classList.add("is-hidden");
     document.body.style.overflow = "";
+    window.dispatchEvent(new Event("invite-opened"));
   });
   document.body.style.overflow = "hidden";
 }
@@ -336,49 +338,85 @@ function initScrollAnimations() {
 }
 
 function initIdleAutoScroll() {
-  const idleDelay = 4500;
-  const step = () => Math.max(360, window.innerHeight * 0.78);
-  let timer;
-  let isProgrammaticScroll = false;
-  let lastScrollY = window.scrollY;
+  const idleDelay = 4200;
+  const speed = 0.035;
+  let idleTimer;
+  let frameId;
+  let lastFrameTime;
+  let enabled = false;
+  let isAutoScrolling = false;
 
   const atPageEnd = () =>
     window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8;
 
+  const stopAutoScroll = () => {
+    isAutoScrolling = false;
+    lastFrameTime = undefined;
+    if (frameId) window.cancelAnimationFrame(frameId);
+    frameId = undefined;
+  };
+
+  const tick = (timestamp) => {
+    if (!isAutoScrolling || atPageEnd()) {
+      stopAutoScroll();
+      return;
+    }
+
+    if (lastFrameTime === undefined) lastFrameTime = timestamp;
+    const delta = timestamp - lastFrameTime;
+    lastFrameTime = timestamp;
+    window.scrollBy(0, delta * speed);
+    frameId = window.requestAnimationFrame(tick);
+  };
+
+  const startAutoScroll = () => {
+    if (!enabled || atPageEnd() || isAutoScrolling) return;
+    isAutoScrolling = true;
+    frameId = window.requestAnimationFrame(tick);
+  };
+
   const schedule = () => {
-    window.clearTimeout(timer);
-    if (atPageEnd()) return;
-    timer = window.setTimeout(() => {
-      isProgrammaticScroll = true;
-      window.scrollBy({ top: step(), behavior: "smooth" });
-      window.setTimeout(() => {
-        isProgrammaticScroll = false;
-        schedule();
-      }, 1100);
-    }, idleDelay);
+    window.clearTimeout(idleTimer);
+    stopAutoScroll();
+    if (!enabled || atPageEnd()) return;
+    idleTimer = window.setTimeout(startAutoScroll, idleDelay);
   };
 
-  const handleUserActivity = () => {
-    if (!isProgrammaticScroll) schedule();
-  };
-
-  window.addEventListener(
-    "scroll",
-    () => {
-      const delta = Math.abs(window.scrollY - lastScrollY);
-      lastScrollY = window.scrollY;
-      if (delta > 4 && !isProgrammaticScroll) schedule();
-    },
-    { passive: true }
-  );
-  ["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
-    window.addEventListener(eventName, handleUserActivity, { passive: true });
+  window.addEventListener("invite-opened", () => {
+    enabled = true;
+    schedule();
   });
 
-  schedule();
+  ["wheel", "touchstart", "pointerdown", "keydown", "focusin"].forEach((eventName) => {
+    window.addEventListener(eventName, schedule, { passive: true });
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopAutoScroll();
+    else schedule();
+  });
 }
 
 function initRsvp() {
+  const getResponses = () => JSON.parse(localStorage.getItem(RSVP_STORAGE_KEY) || "[]");
+  const saveResponses = (responses) =>
+    localStorage.setItem(RSVP_STORAGE_KEY, JSON.stringify(responses));
+  const escapeHtml = (value) =>
+    String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  const updateSummary = () => {
+    const responses = getResponses();
+    const attending = responses.filter((item) => item.attend === "Có tham dự").length;
+    const absent = responses.length - attending;
+    $("#rsvpSummary").textContent = responses.length
+      ? `Đã lưu ${responses.length} phản hồi trên thiết bị này: ${attending} tham dự, ${absent} không tham dự.`
+      : "Chưa có phản hồi nào được lưu trên thiết bị này.";
+  };
+
   $("#rsvpForm").addEventListener("submit", (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -389,9 +427,13 @@ function initRsvp() {
       sentAt: new Date().toISOString(),
     };
 
-    localStorage.setItem("wedding-rsvp", JSON.stringify(payload));
+    const responses = getResponses();
+    responses.push(payload);
+    saveResponses(responses);
+    updateSummary();
     $("#formNote").textContent =
       "Cảm ơn bạn, lời xác nhận đã được lưu trên thiết bị này.";
+    event.currentTarget.reset();
 
     if (wedding.contactEmail) {
       const subject = encodeURIComponent(`RSVP - ${payload.name}`);
@@ -401,6 +443,93 @@ function initRsvp() {
       window.location.href = `mailto:${wedding.contactEmail}?subject=${subject}&body=${body}`;
     }
   });
+
+  $("#exportCsv").addEventListener("click", () => {
+    const responses = getResponses();
+    if (!responses.length) {
+      $("#formNote").textContent = "Chưa có dữ liệu để xuất.";
+      return;
+    }
+
+    const headers = ["Họ và tên", "Tham dự", "Lời nhắn", "Thời gian gửi"];
+    const rows = responses.map((item) => [
+      item.name,
+      item.attend,
+      item.message || "",
+      new Date(item.sentAt).toLocaleString("vi-VN"),
+    ]);
+    const escapeCell = (value) => `"${String(value).replaceAll('"', '""')}"`;
+    const csv = [headers, ...rows].map((row) => row.map(escapeCell).join(",")).join("\n");
+    const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "danh-sach-rsvp.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  });
+
+  $("#exportPdf").addEventListener("click", () => {
+    const responses = getResponses();
+    if (!responses.length) {
+      $("#formNote").textContent = "Chưa có dữ liệu để xuất.";
+      return;
+    }
+
+    const rows = responses
+      .map(
+        (item, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.attend)}</td>
+            <td>${escapeHtml(item.message || "")}</td>
+            <td>${new Date(item.sentAt).toLocaleString("vi-VN")}</td>
+          </tr>
+        `
+      )
+      .join("");
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      $("#formNote").textContent = "Trình duyệt đang chặn cửa sổ in PDF. Hãy cho phép popup rồi thử lại.";
+      return;
+    }
+    printWindow.document.write(`
+      <!doctype html>
+      <html lang="vi">
+        <head>
+          <meta charset="utf-8" />
+          <title>Danh sách RSVP</title>
+          <style>
+            body { font-family: Arial, sans-serif; color: #294f1f; padding: 24px; }
+            h1 { text-align: center; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #c8d3b9; padding: 8px; text-align: left; }
+            th { background: #f4eadf; }
+          </style>
+        </head>
+        <body>
+          <h1>Danh sách xác nhận tham dự</h1>
+          <table>
+            <thead>
+              <tr><th>STT</th><th>Họ và tên</th><th>Tham dự</th><th>Lời nhắn</th><th>Thời gian gửi</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <script>window.onload = () => window.print();<\/script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  });
+
+  $("#clearRsvp").addEventListener("click", () => {
+    localStorage.removeItem(RSVP_STORAGE_KEY);
+    updateSummary();
+    $("#formNote").textContent = "Đã xoá dữ liệu RSVP lưu trên thiết bị này.";
+  });
+
+  updateSummary();
 }
 
 function initMusicButton() {

@@ -212,6 +212,11 @@ a {
   backdrop-filter: blur(10px);
 }
 
+.button--ghost {
+  background: transparent;
+  color: var(--leaf);
+}
+
 .reveal {
   opacity: 0;
   transform: translate3d(0, 34px, 0) scale(0.985);
@@ -995,6 +1000,28 @@ a {
 .form-note {
   margin: 0;
   color: var(--leaf);
+}
+
+.rsvp__exports {
+  max-width: 680px;
+  margin: 20px auto 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 249, 0.72);
+  color: var(--leaf);
+  text-align: center;
+}
+
+.rsvp__exports p {
+  margin: 0 0 14px;
+  font-weight: 600;
+}
+
+.rsvp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .music-toggle {
