@@ -444,7 +444,13 @@ a {
   height: clamp(360px, 55vw, 560px);
   overflow: hidden;
   perspective: 1200px;
+  cursor: grab;
   touch-action: pan-y;
+  user-select: none;
+}
+
+.gallery__viewport.is-dragging {
+  cursor: grabbing;
 }
 
 .gallery__grid {
@@ -472,7 +478,7 @@ a {
     translateZ(calc(var(--depth, 0) * 1px))
     rotateY(calc(var(--offset, 0) * -34deg))
     scale(var(--scale, 1));
-  transition: opacity 0.45s ease, transform 0.55s ease, filter 0.45s ease;
+  transition: opacity 0.45s ease, transform 0.55s ease;
   z-index: var(--z, 1);
   pointer-events: none;
 }
@@ -485,24 +491,39 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(var(--saturate, 0.82)) brightness(var(--brightness, 1));
 }
 
 .gallery__button {
   position: absolute;
   top: 50%;
   z-index: 3;
+  display: grid;
+  place-items: center;
   width: 42px;
   height: 42px;
   border: 0;
   border-radius: 50%;
   background: rgba(51, 73, 44, 0.82);
   color: white;
-  font-size: 34px;
-  line-height: 1;
   cursor: pointer;
   transform: translateY(-50%);
   transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.gallery__button span {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-top: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+}
+
+.gallery__button--prev span {
+  transform: translateX(2px) rotate(-135deg);
+}
+
+.gallery__button--next span {
+  transform: translateX(-2px) rotate(45deg);
 }
 
 .gallery__button:hover {

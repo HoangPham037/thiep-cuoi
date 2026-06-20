@@ -118,11 +118,15 @@
           <h2>Album ảnh cưới</h2>
         </div>
         <div class="gallery__shell" aria-label="Album ảnh cưới dạng trình chiếu">
-          <button class="gallery__button gallery__button--prev" id="galleryPrev" type="button" aria-label="Ảnh trước">‹</button>
+          <button class="gallery__button gallery__button--prev" id="galleryPrev" type="button" aria-label="Ảnh trước">
+            <span aria-hidden="true"></span>
+          </button>
           <div class="gallery__viewport" id="galleryViewport">
             <div class="gallery__grid" id="galleryGrid" aria-live="polite"></div>
           </div>
-          <button class="gallery__button gallery__button--next" id="galleryNext" type="button" aria-label="Ảnh tiếp theo">›</button>
+          <button class="gallery__button gallery__button--next" id="galleryNext" type="button" aria-label="Ảnh tiếp theo">
+            <span aria-hidden="true"></span>
+          </button>
           <p class="gallery__counter" id="galleryCounter">1 / 1</p>
         </div>
       </section>

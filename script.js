@@ -143,6 +143,8 @@ function initGallerySlider() {
   const counter = $("#galleryCounter");
   const slides = Array.from(document.querySelectorAll(".gallery__slide"));
   let startX = 0;
+  let autoTimer;
+  const autoDelay = 3600;
 
   const normalizeIndex = (index) => {
     if (index < 0) return slides.length - 1;
@@ -167,8 +169,6 @@ function initGallerySlider() {
       slide.style.setProperty("--opacity", isVisible ? Math.max(0.2, 1 - absOffset * 0.22) : 0);
       slide.style.setProperty("--depth", 120 - absOffset * 70);
       slide.style.setProperty("--z", 20 - absOffset);
-      slide.style.setProperty("--saturate", isActive ? 1 : 0.58);
-      slide.style.setProperty("--brightness", isActive ? 1 : 1.08);
     });
 
     counter.textContent = `${galleryActiveIndex + 1} / ${slides.length}`;
@@ -179,17 +179,47 @@ function initGallerySlider() {
     updateSlides();
   };
 
-  prev.addEventListener("click", () => goTo(galleryActiveIndex - 1));
-  next.addEventListener("click", () => goTo(galleryActiveIndex + 1));
+  const stopAuto = () => {
+    window.clearInterval(autoTimer);
+  };
+
+  const startAuto = () => {
+    stopAuto();
+    autoTimer = window.setInterval(() => goTo(galleryActiveIndex + 1), autoDelay);
+  };
+
+  prev.addEventListener("click", () => {
+    goTo(galleryActiveIndex - 1);
+    startAuto();
+  });
+  next.addEventListener("click", () => {
+    goTo(galleryActiveIndex + 1);
+    startAuto();
+  });
+  viewport.addEventListener("pointerenter", stopAuto);
+  viewport.addEventListener("pointerleave", () => {
+    viewport.classList.remove("is-dragging");
+    startAuto();
+  });
   viewport.addEventListener("pointerdown", (event) => {
     startX = event.clientX;
+    viewport.classList.add("is-dragging");
+    viewport.setPointerCapture?.(event.pointerId);
+    stopAuto();
   });
   viewport.addEventListener("pointerup", (event) => {
     const delta = event.clientX - startX;
     if (Math.abs(delta) > 40) goTo(galleryActiveIndex + (delta < 0 ? 1 : -1));
+    viewport.classList.remove("is-dragging");
+    startAuto();
+  });
+  viewport.addEventListener("pointercancel", () => {
+    viewport.classList.remove("is-dragging");
+    startAuto();
   });
 
   updateSlides();
+  startAuto();
 }
 
 function initScrollAnimations() {
