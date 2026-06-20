@@ -1,6 +1,8 @@
 const wedding = {
   groom: "Anh Hoàng",
   bride: "Bích Ngọc",
+  groomRole: "Út nam",
+  brideRole: "Trưởng nữ",
   date: "2026-08-03T11:15:00+07:00",
   displayDate: "Thứ hai, 03.08.2026",
   guestTime: "10:30",
@@ -12,6 +14,16 @@ const wedding = {
     "Út nam, con ông Phạm Văn Hùng và bà Lê Thị Bình. Địa chỉ: Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An.",
   brideParents:
     "Trưởng nữ, con ông Đặng Đình Cường và bà Nguyễn Thị Thắm. Địa chỉ: Xóm Sướn, Xã Hạnh Lâm, Tỉnh Nghệ An.",
+  groomFamily: {
+    father: "Phạm Văn Hùng",
+    mother: "Lê Thị Bình",
+    address: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
+  },
+  brideFamily: {
+    father: "Đặng Đình Cường",
+    mother: "Nguyễn Thị Thắm",
+    address: "Xóm Sướn, Xã Hạnh Lâm, Tỉnh Nghệ An",
+  },
   contactEmail: "",
   musicSrc: "assets/music/beautiful-in-white.mp3",
   events: [
@@ -69,8 +81,18 @@ function initContent() {
   setText("#inviteText", wedding.inviteText);
   setText("#groomName", wedding.groom);
   setText("#brideName", wedding.bride);
-  setText("#groomParents", wedding.groomParents);
-  setText("#brideParents", wedding.brideParents);
+  setText("#groomRole", wedding.groomRole);
+  setText("#brideRole", wedding.brideRole);
+  setText("#groomFather", wedding.groomFamily.father);
+  setText("#groomMother", wedding.groomFamily.mother);
+  setText("#groomAddress", wedding.groomFamily.address);
+  setText("#brideFather", wedding.brideFamily.father);
+  setText("#brideMother", wedding.brideFamily.mother);
+  setText("#brideAddress", wedding.brideFamily.address);
+  setText("#ceremonyGroom", wedding.groom);
+  setText("#ceremonyBride", wedding.bride);
+  setText("#ceremonyGroomRole", wedding.groomRole);
+  setText("#ceremonyBrideRole", wedding.brideRole);
   setText("#footerText", `${names} - Thank you for being part of our story.`);
 
   setText("#weddingDay", String(weddingDate.getDate()).padStart(2, "0"));
@@ -259,6 +281,9 @@ function initScrollAnimations() {
     ".section__title",
     ".intro__card",
     ".intro__photo",
+    ".ceremony-info__family",
+    ".ceremony-info__invite",
+    ".ceremony-info__couple",
     ".person",
     ".wedding-info__heading",
     ".wedding-info__time",

@@ -311,6 +311,134 @@ a {
   object-fit: cover;
 }
 
+.ceremony-info {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 16% 8%, rgba(82, 113, 67, 0.16), transparent 28%),
+    radial-gradient(ellipse at 86% 20%, rgba(213, 175, 120, 0.14), transparent 24%),
+    linear-gradient(180deg, rgba(255, 253, 249, 0.94), rgba(255, 248, 241, 0.96));
+}
+
+.ceremony-info::before,
+.ceremony-info::after {
+  content: "";
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 46% 54% 60% 40%;
+  background: rgba(82, 113, 67, 0.1);
+  pointer-events: none;
+}
+
+.ceremony-info::before {
+  top: -130px;
+  left: -90px;
+  transform: rotate(-18deg);
+}
+
+.ceremony-info::after {
+  right: -110px;
+  bottom: -100px;
+  background: rgba(181, 121, 114, 0.09);
+  transform: rotate(28deg);
+}
+
+.ceremony-info__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  color: var(--leaf);
+  text-align: center;
+}
+
+.ceremony-info h2 {
+  margin: 0 0 clamp(28px, 5vw, 52px);
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ceremony-info__families {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(28px, 8vw, 120px);
+  margin-bottom: clamp(34px, 6vw, 62px);
+}
+
+.ceremony-info__family {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.ceremony-info__family p,
+.ceremony-info__family small {
+  margin: 0;
+}
+
+.ceremony-info__family p {
+  font-size: 17px;
+}
+
+.ceremony-info__family strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(25px, 3.4vw, 38px);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.ceremony-info__family small {
+  max-width: 260px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ceremony-info__invite {
+  margin-bottom: clamp(28px, 5vw, 48px);
+  font-family: var(--serif);
+  font-size: clamp(18px, 2.8vw, 28px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ceremony-info__invite p {
+  margin: 4px 0;
+}
+
+.ceremony-info__couple {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.ceremony-info__couple h3 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(58px, 9vw, 116px);
+  font-weight: 500;
+  line-height: 0.95;
+}
+
+.ceremony-info__couple span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ceremony-info__couple em {
+  font-family: var(--serif);
+  font-size: clamp(34px, 5vw, 58px);
+  font-style: italic;
+  line-height: 1;
+}
+
 .couple {
   display: grid;
   gap: 34px;
@@ -845,9 +973,14 @@ a {
   }
 
   .intro__grid,
+  .ceremony-info__families,
   .person,
   .person--reverse {
     grid-template-columns: 1fr;
+  }
+
+  .ceremony-info__families {
+    gap: 32px;
   }
 
   .person--reverse img {
