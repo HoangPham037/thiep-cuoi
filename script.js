@@ -26,6 +26,7 @@ const wedding = {
   },
   contactEmail: "",
   musicSrc: "assets/music/beautiful-in-white.mp3",
+  rsvpEndpoint: "",
   venueName: "Nhà Văn Hoá Xóm Thanh Đức",
   venueAddress:
     "Nhà văn hoá xóm Thanh Đức, xã Hạnh Lâm, tỉnh Nghệ An|Địa chỉ cũ: Nhà văn hoá xóm 1, xã Thanh Đức, huyện Thanh Chương, tỉnh Nghệ An",
@@ -398,6 +399,10 @@ function initIdleAutoScroll() {
 }
 
 function initRsvp() {
+  const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
+  const adminPanel = $("#adminRsvpPanel");
+  adminPanel.hidden = !isAdminMode;
+
   const getResponses = () => JSON.parse(localStorage.getItem(RSVP_STORAGE_KEY) || "[]");
   const saveResponses = (responses) =>
     localStorage.setItem(RSVP_STORAGE_KEY, JSON.stringify(responses));
@@ -431,8 +436,21 @@ function initRsvp() {
     responses.push(payload);
     saveResponses(responses);
     updateSummary();
-    $("#formNote").textContent =
-      "Cảm ơn bạn, lời xác nhận đã được lưu trên thiết bị này.";
+
+    if (wedding.rsvpEndpoint) {
+      fetch(wedding.rsvpEndpoint, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(payload),
+      }).catch(() => {
+        $("#formNote").textContent =
+          "Đã ghi nhận trên thiết bị này, nhưng chưa gửi được về hệ thống.";
+      });
+    }
+
+    $("#formNote").textContent = wedding.rsvpEndpoint
+      ? "Cảm ơn bạn, xác nhận tham dự đã được gửi."
+      : "Cảm ơn bạn, lời xác nhận đã được ghi nhận.";
     event.currentTarget.reset();
 
     if (wedding.contactEmail) {

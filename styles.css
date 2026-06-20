@@ -1012,6 +1012,17 @@ a {
   text-align: center;
 }
 
+.rsvp__exports[hidden] {
+  display: none;
+}
+
+.rsvp__exports h3 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 600;
+}
+
 .rsvp__exports p {
   margin: 0 0 14px;
   font-weight: 600;
