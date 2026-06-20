@@ -34,6 +34,7 @@
       <nav class="nav">
         <a href="#invite">Lời mời</a>
         <a href="#events">Lịch trình</a>
+        <a href="#venue">Địa điểm</a>
         <a href="#gallery">Album</a>
         <a href="#rsvp">Xác nhận</a>
       </nav>
@@ -169,6 +170,25 @@
           <div class="calendar" id="weddingCalendar" aria-label="Lịch tháng cưới"></div>
           <a class="button wedding-info__map" id="mapLink" href="https://maps.google.com" target="_blank" rel="noreferrer">
             Xem bản đồ
+          </a>
+        </div>
+      </section>
+
+      <section class="section venue-info" id="venue">
+        <div class="venue-info__inner">
+          <h2>Tiệc cưới sẽ tổ chức tại</h2>
+          <p id="venueAddress">Nhà Văn Hoá Xóm Thanh Đức (xóm 1 cũ), xã Hạnh Lâm, tỉnh Nghệ An</p>
+          <div class="venue-info__map">
+            <iframe
+              id="venueMap"
+              title="Bản đồ địa điểm tổ chức tiệc cưới"
+              src="https://www.google.com/maps?q=18.825774,105.171121&z=16&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+          <a class="button venue-info__link" id="venueMapLink" href="https://maps.google.com" target="_blank" rel="noreferrer">
+            Mở Google Maps
           </a>
         </div>
       </section>

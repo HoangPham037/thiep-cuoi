@@ -26,6 +26,9 @@ const wedding = {
   },
   contactEmail: "",
   musicSrc: "assets/music/beautiful-in-white.mp3",
+  venueName: "Nhà Văn Hoá Xóm Thanh Đức",
+  venueAddress: "Nhà Văn Hoá Xóm Thanh Đức (xóm 1 cũ), xã Hạnh Lâm, tỉnh Nghệ An",
+  mapEmbed: "https://www.google.com/maps?q=18.825774,105.171121&z=16&output=embed",
   events: [
     {
       title: "Tiệc cưới",
@@ -93,6 +96,9 @@ function initContent() {
   setText("#ceremonyBride", wedding.bride);
   setText("#ceremonyGroomRole", wedding.groomRole);
   setText("#ceremonyBrideRole", wedding.brideRole);
+  setText("#venueAddress", wedding.venueAddress);
+  $("#venueMap").src = wedding.mapEmbed;
+  $("#venueMapLink").href = wedding.events[0].map;
   setText("#footerText", `${names} - Thank you for being part of our story.`);
 
   setText("#weddingDay", String(weddingDate.getDate()).padStart(2, "0"));
@@ -293,6 +299,7 @@ function initScrollAnimations() {
     ".wedding-info__times",
     ".wedding-info__countdown",
     ".calendar",
+    ".venue-info__inner",
     ".quote div",
     ".gallery__shell",
     ".rsvp__form",
