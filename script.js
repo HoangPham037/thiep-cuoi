@@ -27,7 +27,8 @@ const wedding = {
   contactEmail: "",
   musicSrc: "assets/music/beautiful-in-white.mp3",
   venueName: "Nhà Văn Hoá Xóm Thanh Đức",
-  venueAddress: "Nhà Văn Hoá Xóm Thanh Đức (xóm 1 cũ), xã Hạnh Lâm, tỉnh Nghệ An",
+  venueAddress:
+    "Nhà văn hoá xóm Thanh Đức, xã Hạnh Lâm, tỉnh Nghệ An|Địa chỉ cũ: Nhà văn hoá xóm 1, xã Thanh Đức, huyện Thanh Chương, tỉnh Nghệ An",
   mapEmbed: "https://www.google.com/maps?q=18.825774,105.171121&z=16&output=embed",
   events: [
     {
@@ -96,7 +97,10 @@ function initContent() {
   setText("#ceremonyBride", wedding.bride);
   setText("#ceremonyGroomRole", wedding.groomRole);
   setText("#ceremonyBrideRole", wedding.brideRole);
-  setText("#venueAddress", wedding.venueAddress);
+  $("#venueAddress").innerHTML = wedding.venueAddress
+    .split("|")
+    .map((line) => `<p>${line}</p>`)
+    .join("");
   $("#venueMap").src = wedding.mapEmbed;
   $("#venueMapLink").href = wedding.events[0].map;
   setText("#footerText", `${names} - Thank you for being part of our story.`);
@@ -154,8 +158,6 @@ function initEvents() {
   setText("#lunarDate", wedding.lunarDate);
   setText("#guestTime", wedding.guestTime);
   setText("#startTime", wedding.startTime);
-  $("#mapLink").href = wedding.events[0].map;
-
   renderWeddingCalendar(year, month - 1, weddingDate.getDate());
 }
 
@@ -288,7 +290,6 @@ function initScrollAnimations() {
     ".intro__card",
     ".intro__photo",
     ".ceremony-info__family",
-    ".ceremony-info__invite",
     ".ceremony-info__couple",
     ".person",
     ".wedding-info__heading",
@@ -332,6 +333,49 @@ function initScrollAnimations() {
   );
 
   elements.forEach((element) => observer.observe(element));
+}
+
+function initIdleAutoScroll() {
+  const idleDelay = 4500;
+  const step = () => Math.max(360, window.innerHeight * 0.78);
+  let timer;
+  let isProgrammaticScroll = false;
+  let lastScrollY = window.scrollY;
+
+  const atPageEnd = () =>
+    window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 8;
+
+  const schedule = () => {
+    window.clearTimeout(timer);
+    if (atPageEnd()) return;
+    timer = window.setTimeout(() => {
+      isProgrammaticScroll = true;
+      window.scrollBy({ top: step(), behavior: "smooth" });
+      window.setTimeout(() => {
+        isProgrammaticScroll = false;
+        schedule();
+      }, 1100);
+    }, idleDelay);
+  };
+
+  const handleUserActivity = () => {
+    if (!isProgrammaticScroll) schedule();
+  };
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      const delta = Math.abs(window.scrollY - lastScrollY);
+      lastScrollY = window.scrollY;
+      if (delta > 4 && !isProgrammaticScroll) schedule();
+    },
+    { passive: true }
+  );
+  ["wheel", "touchstart", "pointerdown", "keydown"].forEach((eventName) => {
+    window.addEventListener(eventName, handleUserActivity, { passive: true });
+  });
+
+  schedule();
 }
 
 function initRsvp() {
@@ -404,3 +448,4 @@ initGallery();
 initGallerySlider();
 initRsvp();
 initScrollAnimations();
+initIdleAutoScroll();

@@ -402,19 +402,6 @@ a {
   line-height: 1.5;
 }
 
-.ceremony-info__invite {
-  margin-bottom: clamp(28px, 5vw, 48px);
-  font-family: var(--serif);
-  font-size: clamp(18px, 2.8vw, 28px);
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.ceremony-info__invite p {
-  margin: 4px 0;
-}
-
 .ceremony-info__couple {
   display: grid;
   justify-items: center;
@@ -667,14 +654,14 @@ a {
 .calendar__cell.is-active::before {
   content: "";
   position: absolute;
-  inset: 5px;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
   z-index: -1;
   border-radius: 50%;
   background: var(--leaf);
-}
-
-.wedding-info__map {
-  margin-top: 28px;
+  transform: translate(-50%, -50%);
 }
 
 .venue-info {
@@ -728,9 +715,13 @@ a {
   text-transform: uppercase;
 }
 
-.venue-info p {
+.venue-info__address {
   margin: 0 auto 28px;
   max-width: 720px;
+}
+
+.venue-info__address p {
+  margin: 0 0 8px;
   font-size: clamp(16px, 2vw, 20px);
   font-weight: 500;
 }
