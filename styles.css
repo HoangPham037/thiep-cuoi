@@ -541,6 +541,10 @@ a {
   background: var(--leaf);
 }
 
+.wedding-info__map {
+  margin-top: 28px;
+}
+
 .quote {
   position: relative;
   min-height: 72vh;

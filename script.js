@@ -1,31 +1,33 @@
 const wedding = {
-  groom: "Chú rể",
-  bride: "Cô dâu",
-  date: "2027-01-01T11:00:00+07:00",
-  displayDate: "Chủ nhật, 01.01.2027",
+  groom: "Anh Hoàng",
+  bride: "Bích Ngọc",
+  date: "2026-08-03T11:15:00+07:00",
+  displayDate: "Thứ hai, 03.08.2026",
   guestTime: "10:30",
-  startTime: "11:00",
-  lunarDate: "(Tức ngày ...)",
+  startTime: "11:15",
+  lunarDate: "(Tức ngày 21/06 năm Bính Ngọ)",
   inviteText:
     "Gia đình chúng tôi trân trọng kính mời bạn đến dự tiệc cưới, cùng chia sẻ niềm vui và gửi lời chúc phúc cho đôi uyên ương.",
-  groomParents: "Con ông bà ...",
-  brideParents: "Con ông bà ...",
+  groomParents:
+    "Út nam, con ông Phạm Văn Hùng và bà Lê Thị Bình. Địa chỉ: Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An.",
+  brideParents:
+    "Trưởng nữ, con ông Đặng Đình Cường và bà Nguyễn Thị Thắm. Địa chỉ: Xóm Sướn, Xã Hạnh Lâm, Tỉnh Nghệ An.",
   contactEmail: "",
   musicSrc: "assets/music/beautiful-in-white.mp3",
   events: [
     {
-      title: "Lễ thành hôn",
-      time: "11:00 - 01.01.2027",
-      place: "Tư gia nhà trai",
-      address: "Cập nhật địa chỉ tại đây",
-      map: "https://maps.google.com",
+      title: "Tiệc cưới",
+      time: "11:15 - 03.08.2026",
+      place: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
+      address: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
+      map: "https://www.google.com/maps/place/18%C2%B049'32.8%22N+105%C2%B010'16.0%22E/@18.82641,105.1700443,18.5z/data=!4m4!3m3!8m2!3d18.825774!4d105.171121?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     },
     {
-      title: "Tiệc cưới",
-      time: "18:00 - 01.01.2027",
-      place: "Trung tâm tiệc cưới",
-      address: "Cập nhật địa chỉ tại đây",
-      map: "https://maps.google.com",
+      title: "Lễ thành hôn",
+      time: "11:15 - 03.08.2026",
+      place: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
+      address: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
+      map: "https://www.google.com/maps/place/18%C2%B049'32.8%22N+105%C2%B010'16.0%22E/@18.82641,105.1700443,18.5z/data=!4m4!3m3!8m2!3d18.825774!4d105.171121?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     },
   ],
   gallery: [
@@ -124,6 +126,7 @@ function initEvents() {
   setText("#lunarDate", wedding.lunarDate);
   setText("#guestTime", wedding.guestTime);
   setText("#startTime", wedding.startTime);
+  $("#mapLink").href = wedding.events[0].map;
 
   renderWeddingCalendar(year, month - 1, weddingDate.getDate());
 }
