@@ -239,6 +239,7 @@ function initScrollAnimations() {
 
   elements.forEach((element, index) => {
     element.classList.add("reveal");
+    element.classList.add("is-below");
     element.style.setProperty("--reveal-delay", `${Math.min(index % 4, 3) * 90}ms`);
   });
 
@@ -246,12 +247,18 @@ function initScrollAnimations() {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
+          entry.target.classList.remove("is-above", "is-below");
           entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
+          return;
         }
+
+        const isAboveViewport = entry.boundingClientRect.top < 0;
+        entry.target.classList.remove("is-visible");
+        entry.target.classList.toggle("is-above", isAboveViewport);
+        entry.target.classList.toggle("is-below", !isAboveViewport);
       });
     },
-    { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+    { threshold: 0.18, rootMargin: "-6% 0px -8% 0px" }
   );
 
   elements.forEach((element) => observer.observe(element));
