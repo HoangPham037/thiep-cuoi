@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f3ed" />
+    <title>Thiệp cưới online</title>
+    <meta
+      name="description"
+      content="Trân trọng kính mời bạn đến chung vui trong ngày cưới của chúng tôi."
+    />
+    <link rel="preload" as="image" href="assets/images/PQT01340-.webp" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="cover" id="cover">
+      <div class="cover__photo"></div>
+      <div class="cover__content">
+        <p class="eyebrow">Save the date</p>
+        <h1 id="coverNames">Thiệp cưới</h1>
+        <p id="coverDate">Trân trọng kính mời</p>
+        <button class="button button--light" id="openInvite" type="button">Mở thiệp</button>
+      </div>
+    </div>
+
+    <header class="topbar" aria-label="Điều hướng">
+      <a class="brand" href="#home" id="navNames">Wedding</a>
+      <nav class="nav">
+        <a href="#invite">Lời mời</a>
+        <a href="#events">Lịch trình</a>
+        <a href="#gallery">Album</a>
+        <a href="#rsvp">Xác nhận</a>
+      </nav>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <picture>
+          <source srcset="assets/images/PQT01340-.webp" type="image/webp" />
+          <img src="anh/PQT01340-.jpg" alt="Ảnh cưới cô dâu chú rể" />
+        </picture>
+        <div class="hero__shade"></div>
+        <div class="hero__content">
+          <p class="eyebrow">We are getting married</p>
+          <h1 id="heroNames">Chú rể & Cô dâu</h1>
+          <p id="heroDate">Chủ nhật, 01.01.2027</p>
+          <a class="button" href="#invite">Xem lời mời</a>
+        </div>
+      </section>
+
+      <section class="section intro" id="invite">
+        <div class="section__title">
+          <p class="eyebrow">Trân trọng kính mời</p>
+          <h2>Đến chung vui cùng gia đình chúng tôi</h2>
+        </div>
+        <div class="intro__grid">
+          <article class="intro__card">
+            <p class="script" id="introNames">Chú rể & Cô dâu</p>
+            <p id="inviteText">
+              Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng tôi.
+            </p>
+            <div class="date-box">
+              <span id="weddingDay">01</span>
+              <strong id="weddingMonth">Tháng 01</strong>
+              <small id="weddingYear">2027</small>
+            </div>
+          </article>
+          <figure class="intro__photo">
+            <img src="assets/images/PQT01392-.webp" alt="Khoảnh khắc cưới" loading="lazy" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="section countdown" aria-label="Đếm ngược ngày cưới">
+        <div class="countdown__item"><strong id="days">00</strong><span>Ngày</span></div>
+        <div class="countdown__item"><strong id="hours">00</strong><span>Giờ</span></div>
+        <div class="countdown__item"><strong id="minutes">00</strong><span>Phút</span></div>
+        <div class="countdown__item"><strong id="seconds">00</strong><span>Giây</span></div>
+      </section>
+
+      <section class="section couple">
+        <div class="person">
+          <img src="assets/images/PQT01410-.webp" alt="Chú rể" loading="lazy" />
+          <div>
+            <p class="eyebrow">The groom</p>
+            <h2 id="groomName">Chú rể</h2>
+            <p id="groomParents">Con ông bà ...</p>
+          </div>
+        </div>
+        <div class="person person--reverse">
+          <img src="assets/images/PQT01474-.webp" alt="Cô dâu" loading="lazy" />
+          <div>
+            <p class="eyebrow">The bride</p>
+            <h2 id="brideName">Cô dâu</h2>
+            <p id="brideParents">Con ông bà ...</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section events" id="events">
+        <div class="section__title">
+          <p class="eyebrow">Wedding event</p>
+          <h2>Thông tin buổi lễ</h2>
+        </div>
+        <div class="event-list" id="eventList"></div>
+      </section>
+
+      <section class="quote">
+        <img src="assets/images/PQT02249-.webp" alt="Ảnh cưới ngoài trời" loading="lazy" />
+        <div>
+          <p>“Tình yêu không nằm ở những điều thật lớn lao, mà ở việc chúng ta chọn nắm tay nhau mỗi ngày.”</p>
+        </div>
+      </section>
+
+      <section class="section gallery" id="gallery">
+        <div class="section__title">
+          <p class="eyebrow">Our moments</p>
+          <h2>Album ảnh cưới</h2>
+        </div>
+        <div class="gallery__grid" id="galleryGrid"></div>
+      </section>
+
+      <section class="section rsvp" id="rsvp">
+        <div class="section__title">
+          <p class="eyebrow">RSVP</p>
+          <h2>Bạn sẽ tham dự chứ?</h2>
+        </div>
+        <form class="rsvp__form" id="rsvpForm">
+          <label>
+            Họ và tên
+            <input name="name" required placeholder="Nhập tên của bạn" />
+          </label>
+          <label>
+            Lời nhắn
+            <textarea name="message" rows="4" placeholder="Gửi lời chúc đến cô dâu chú rể"></textarea>
+          </label>
+          <fieldset>
+            <legend>Xác nhận tham dự</legend>
+            <label><input type="radio" name="attend" value="Có tham dự" checked /> Có tham dự</label>
+            <label><input type="radio" name="attend" value="Không tham dự" /> Không tham dự</label>
+          </fieldset>
+          <button class="button" type="submit">Gửi xác nhận</button>
+          <p class="form-note" id="formNote"></p>
+        </form>
+      </section>
+    </main>
+
+    <button class="music-toggle" id="musicToggle" type="button" aria-label="Bật nhạc nền">♪</button>
+    <footer class="footer">
+      <p id="footerText">Thank you for being part of our story.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
