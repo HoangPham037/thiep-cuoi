@@ -3,10 +3,10 @@ const wedding = {
   bride: "Bích Ngọc",
   groomRole: "Út nam",
   brideRole: "Trưởng nữ",
-  date: "2026-08-03T11:15:00+07:00",
+  date: "2026-08-03T10:45:00+07:00",
   displayDate: "Thứ hai, 03.08.2026",
   guestTime: "10:30",
-  partyTime: "11:15",
+  partyTime: "10:45",
   startTime: "10:45",
   lunarDate: "(Tức ngày 21/06 năm Bính Ngọ)",
   inviteText:
@@ -36,14 +36,14 @@ const wedding = {
   events: [
     {
       title: "Tiệc cưới",
-      time: "11:15 - 03.08.2026",
+      time: "10:45 - 03.08.2026",
       place: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
       address: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
       map: "https://www.google.com/maps/place/18%C2%B049'32.8%22N+105%C2%B010'16.0%22E/@18.82641,105.1700443,18.5z/data=!4m4!3m3!8m2!3d18.825774!4d105.171121?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
     },
     {
       title: "Lễ thành hôn",
-      time: "11:15 - 03.08.2026",
+      time: "10:45 - 03.08.2026",
       place: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
       address: "Xóm Thanh Đức, Xã Hạnh Lâm, Tỉnh Nghệ An",
       map: "https://www.google.com/maps/place/18%C2%B049'32.8%22N+105%C2%B010'16.0%22E/@18.82641,105.1700443,18.5z/data=!4m4!3m3!8m2!3d18.825774!4d105.171121?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D",
@@ -409,6 +409,7 @@ function initRsvp() {
   const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
   const adminPanel = $("#adminRsvpPanel");
   adminPanel.hidden = !isAdminMode;
+  const hasRemoteRsvp = Boolean(wedding.rsvpEndpoint && wedding.adminKey);
   let currentResponses = [];
 
   const getLocalResponses = () => JSON.parse(localStorage.getItem(RSVP_STORAGE_KEY) || "[]");
@@ -425,13 +426,18 @@ function initRsvp() {
     const responses = currentResponses;
     const attending = responses.filter((item) => item.attend === "Có tham dự").length;
     const absent = responses.length - attending;
+    if (!hasRemoteRsvp) {
+      $("#rsvpSummary").textContent =
+        "Chưa kết nối lưu RSVP online. Hiện dữ liệu chỉ nằm trên từng thiết bị, nên admin không thể thấy phản hồi từ máy khác cho đến khi cấu hình Google Sheets/App Script.";
+      return;
+    }
     $("#rsvpSummary").textContent = responses.length
-      ? `Đã lưu ${responses.length} phản hồi trên thiết bị này: ${attending} tham dự, ${absent} không tham dự.`
-      : "Chưa có phản hồi nào được lưu trên thiết bị này.";
+      ? `Đã nhận ${responses.length} phản hồi: ${attending} tham dự, ${absent} không tham dự.`
+      : "Chưa có phản hồi nào được gửi về hệ thống RSVP online.";
   };
   const loadRemoteResponses = () =>
     new Promise((resolve, reject) => {
-      if (!wedding.rsvpEndpoint) {
+      if (!hasRemoteRsvp) {
         resolve(getLocalResponses());
         return;
       }
@@ -462,7 +468,7 @@ function initRsvp() {
   const refreshResponses = async () => {
     try {
       currentResponses = await loadRemoteResponses();
-      if (!wedding.rsvpEndpoint) currentResponses = getLocalResponses();
+      if (!hasRemoteRsvp) currentResponses = getLocalResponses();
       updateSummary();
       return currentResponses;
     } catch (error) {
@@ -474,7 +480,7 @@ function initRsvp() {
   };
   const clearRemoteResponses = () =>
     new Promise((resolve, reject) => {
-      if (!wedding.rsvpEndpoint) {
+      if (!hasRemoteRsvp) {
         localStorage.removeItem(RSVP_STORAGE_KEY);
         resolve();
         return;
@@ -518,9 +524,9 @@ function initRsvp() {
     responses.push(payload);
     saveResponses(responses);
     currentResponses = responses;
-    if (isAdminMode && !wedding.rsvpEndpoint) updateSummary();
+    if (isAdminMode && !hasRemoteRsvp) updateSummary();
 
-    if (wedding.rsvpEndpoint) {
+    if (hasRemoteRsvp) {
       fetch(wedding.rsvpEndpoint, {
         method: "POST",
         mode: "no-cors",
@@ -531,9 +537,9 @@ function initRsvp() {
       });
     }
 
-    $("#formNote").textContent = wedding.rsvpEndpoint
+    $("#formNote").textContent = hasRemoteRsvp
       ? "Cảm ơn bạn, xác nhận tham dự đã được gửi."
-      : "Cảm ơn bạn, lời xác nhận đã được ghi nhận. Chủ tiệc cần cấu hình hệ thống RSVP để nhận phản hồi từ xa.";
+      : "Website chưa kết nối RSVP online, nên xác nhận này mới chỉ lưu trên thiết bị hiện tại. Cần cấu hình Google Sheets/App Script để admin nhận được từ máy khác.";
     event.currentTarget.reset();
 
     if (wedding.contactEmail) {

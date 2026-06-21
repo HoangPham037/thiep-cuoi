@@ -38,3 +38,5 @@ GitHub Pages là web tĩnh, nên cần một nơi lưu dữ liệu chung. Cách 
 7. Copy cùng `ADMIN_KEY` vào `wedding.adminKey`.
 
 Khách mở link thường để gửi xác nhận. Admin mở thêm `?admin=1` để tải phản hồi và xuất Excel/PDF.
+
+Nếu `rsvpEndpoint` hoặc `adminKey` còn để trống trong `script.js`, RSVP chỉ lưu tạm trong trình duyệt của từng thiết bị. Khi đó khách gửi trên điện thoại thì admin mở trên máy khác sẽ không thấy dữ liệu.
