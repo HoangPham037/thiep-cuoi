@@ -93,11 +93,11 @@ function initContent() {
   setText("#brideName", wedding.bride);
   setText("#groomRole", wedding.groomRole);
   setText("#brideRole", wedding.brideRole);
-  setText("#groomFather", wedding.groomFamily.father);
-  setText("#groomMother", wedding.groomFamily.mother);
+  setText("#groomFather", `Ông: ${wedding.groomFamily.father}`);
+  setText("#groomMother", `Bà: ${wedding.groomFamily.mother}`);
   setText("#groomAddress", wedding.groomFamily.address);
-  setText("#brideFather", wedding.brideFamily.father);
-  setText("#brideMother", wedding.brideFamily.mother);
+  setText("#brideFather", `Ông: ${wedding.brideFamily.father}`);
+  setText("#brideMother", `Bà: ${wedding.brideFamily.mother}`);
   setText("#brideAddress", wedding.brideFamily.address);
   setText("#ceremonyGroom", wedding.groom);
   setText("#ceremonyBride", wedding.bride);
