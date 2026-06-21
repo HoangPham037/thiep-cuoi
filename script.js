@@ -27,7 +27,9 @@ const wedding = {
   },
   contactEmail: "",
   musicSrc: "assets/music/beautiful-in-white.mp3",
-  rsvpEndpoint: "",
+  rsvpProvider: "formspree",
+  rsvpEndpoint: "https://formspree.io/f/mdarnpgj",
+  rsvpDashboard: "https://formspree.io/forms/mdarnpgj/submissions",
   adminKey: "",
   venueName: "Nhà Văn Hoá Xóm Thanh Đức",
   venueAddress:
@@ -409,7 +411,9 @@ function initRsvp() {
   const isAdminMode = new URLSearchParams(window.location.search).get("admin") === "1";
   const adminPanel = $("#adminRsvpPanel");
   adminPanel.hidden = !isAdminMode;
-  const hasRemoteRsvp = Boolean(wedding.rsvpEndpoint && wedding.adminKey);
+  const hasSubmitEndpoint = Boolean(wedding.rsvpEndpoint);
+  const isFormspreeRsvp = wedding.rsvpProvider === "formspree";
+  const canAdminListRemote = Boolean(wedding.rsvpEndpoint && wedding.adminKey && !isFormspreeRsvp);
   let currentResponses = [];
 
   const getLocalResponses = () => JSON.parse(localStorage.getItem(RSVP_STORAGE_KEY) || "[]");
@@ -426,7 +430,12 @@ function initRsvp() {
     const responses = currentResponses;
     const attending = responses.filter((item) => item.attend === "Có tham dự").length;
     const absent = responses.length - attending;
-    if (!hasRemoteRsvp) {
+    if (isFormspreeRsvp) {
+      $("#rsvpSummary").textContent =
+        "RSVP đang gửi về Formspree. Bạn xem phản hồi và xuất CSV trong Formspree Dashboard; trang admin này chỉ giữ bản lưu tạm trên thiết bị hiện tại.";
+      return;
+    }
+    if (!canAdminListRemote) {
       $("#rsvpSummary").textContent =
         "Chưa kết nối lưu RSVP online. Hiện dữ liệu chỉ nằm trên từng thiết bị, nên admin không thể thấy phản hồi từ máy khác cho đến khi cấu hình Google Sheets/App Script.";
       return;
@@ -437,7 +446,7 @@ function initRsvp() {
   };
   const loadRemoteResponses = () =>
     new Promise((resolve, reject) => {
-      if (!hasRemoteRsvp) {
+      if (!canAdminListRemote) {
         resolve(getLocalResponses());
         return;
       }
@@ -468,7 +477,7 @@ function initRsvp() {
   const refreshResponses = async () => {
     try {
       currentResponses = await loadRemoteResponses();
-      if (!hasRemoteRsvp) currentResponses = getLocalResponses();
+      if (!canAdminListRemote) currentResponses = getLocalResponses();
       updateSummary();
       return currentResponses;
     } catch (error) {
@@ -480,7 +489,7 @@ function initRsvp() {
   };
   const clearRemoteResponses = () =>
     new Promise((resolve, reject) => {
-      if (!hasRemoteRsvp) {
+      if (!canAdminListRemote) {
         localStorage.removeItem(RSVP_STORAGE_KEY);
         resolve();
         return;
@@ -510,9 +519,40 @@ function initRsvp() {
       document.body.appendChild(script);
     });
 
-  $("#rsvpForm").addEventListener("submit", (event) => {
+  const submitRemoteResponse = async (payload) => {
+    if (!hasSubmitEndpoint) return;
+
+    if (isFormspreeRsvp) {
+      const response = await fetch(wedding.rsvpEndpoint, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "Họ và tên": payload.name,
+          "Xác nhận tham dự": payload.attend,
+          "Lời nhắn": payload.message || "",
+          "Thời gian gửi": new Date(payload.sentAt).toLocaleString("vi-VN"),
+        }),
+      });
+
+      if (!response.ok) throw new Error("Chưa gửi được xác nhận về Formspree.");
+      return;
+    }
+
+    await fetch(wedding.rsvpEndpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload),
+    });
+  };
+
+  $("#rsvpForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const submitButton = form.querySelector('button[type="submit"]');
     const payload = {
       name: data.get("name"),
       attend: data.get("attend"),
@@ -524,23 +564,25 @@ function initRsvp() {
     responses.push(payload);
     saveResponses(responses);
     currentResponses = responses;
-    if (isAdminMode && !hasRemoteRsvp) updateSummary();
+    if (isAdminMode && !canAdminListRemote) updateSummary();
 
-    if (hasRemoteRsvp) {
-      fetch(wedding.rsvpEndpoint, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(payload),
-      }).catch(() => {
-        $("#formNote").textContent =
-          "Đã ghi nhận trên thiết bị này, nhưng chưa gửi được về hệ thống.";
-      });
+    submitButton.disabled = true;
+    $("#formNote").textContent = hasSubmitEndpoint
+      ? "Đang gửi xác nhận..."
+      : "Website chưa kết nối RSVP online, xác nhận này mới chỉ lưu trên thiết bị hiện tại.";
+
+    try {
+      await submitRemoteResponse(payload);
+      $("#formNote").textContent = hasSubmitEndpoint
+        ? "Cảm ơn bạn, xác nhận tham dự đã được gửi."
+        : "Website chưa kết nối RSVP online, xác nhận này mới chỉ lưu trên thiết bị hiện tại.";
+      form.reset();
+    } catch (error) {
+      $("#formNote").textContent =
+        "Đã lưu tạm trên thiết bị này, nhưng chưa gửi được về Formspree. Vui lòng thử lại hoặc báo cô dâu chú rể.";
+    } finally {
+      submitButton.disabled = false;
     }
-
-    $("#formNote").textContent = hasRemoteRsvp
-      ? "Cảm ơn bạn, xác nhận tham dự đã được gửi."
-      : "Website chưa kết nối RSVP online, nên xác nhận này mới chỉ lưu trên thiết bị hiện tại. Cần cấu hình Google Sheets/App Script để admin nhận được từ máy khác.";
-    event.currentTarget.reset();
 
     if (wedding.contactEmail) {
       const subject = encodeURIComponent(`RSVP - ${payload.name}`);

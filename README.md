@@ -27,6 +27,14 @@ Sau đó vào `http://127.0.0.1:8080`.
 
 ## Nhận RSVP từ khách mời
 
+Website hiện đang gửi RSVP về Formspree endpoint trong `script.js`:
+
+```js
+rsvpEndpoint: "https://formspree.io/f/mdarnpgj"
+```
+
+Bạn xem phản hồi trong Formspree Dashboard của form này, hoặc email nhận thông báo đã cấu hình trong Formspree. Formspree Dashboard có chức năng export CSV. Vì Formspree không mở API danh sách phản hồi công khai cho GitHub Pages, trang admin `?admin=1` trên web không thể tự tải dữ liệu từ Formspree.
+
 GitHub Pages là web tĩnh, nên cần một nơi lưu dữ liệu chung. Cách đơn giản là Google Sheets + Apps Script:
 
 1. Tạo Google Sheet mới.
