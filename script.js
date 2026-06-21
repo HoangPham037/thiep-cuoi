@@ -6,7 +6,8 @@ const wedding = {
   date: "2026-08-03T11:15:00+07:00",
   displayDate: "Thứ hai, 03.08.2026",
   guestTime: "10:30",
-  startTime: "11:15",
+  partyTime: "11:15",
+  startTime: "10:45",
   lunarDate: "(Tức ngày 21/06 năm Bính Ngọ)",
   inviteText:
     "Gia đình chúng tôi trân trọng kính mời bạn đến dự tiệc cưới, cùng chia sẻ niềm vui và gửi lời chúc phúc cho đôi uyên ương.",
@@ -154,7 +155,7 @@ function initEvents() {
   const month = weddingDate.getMonth() + 1;
   const year = weddingDate.getFullYear();
 
-  setText("#partyTime", wedding.startTime);
+  setText("#partyTime", wedding.partyTime);
   setText("#eventWeekday", weekdays[weddingDate.getDay()]);
   setText("#eventDay", String(weddingDate.getDate()).padStart(2, "0"));
   setText("#eventMonth", `Tháng ${String(month).padStart(2, "0")}`);
