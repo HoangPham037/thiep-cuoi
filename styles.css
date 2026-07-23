@@ -34,6 +34,7 @@ body {
   max-width: 100%;
   margin: 0;
   overflow-x: hidden;
+  overflow-y: auto;
   background:
     radial-gradient(circle at 14% 12%, rgba(82, 113, 67, 0.13), transparent 25%),
     radial-gradient(circle at 86% 24%, rgba(213, 175, 120, 0.12), transparent 25%),
@@ -42,7 +43,7 @@ body {
   font-family: var(--sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 body::before {
@@ -555,6 +556,7 @@ a {
 }
 
 .hero__shade {
+  pointer-events: none;
   background:
     radial-gradient(circle at 16% 18%, rgba(255, 244, 230, 0.18), transparent 22%),
     linear-gradient(180deg, rgba(38, 25, 20, 0.02), rgba(51, 28, 22, 0.66));
@@ -1822,10 +1824,11 @@ a {
     height: var(--stable-hero-height);
     min-height: var(--stable-hero-height);
     max-height: var(--stable-hero-height);
+    contain: layout paint;
   }
 
   .hero img {
-    object-position: center 18%;
+    object-position: center 14%;
   }
 
   .intro__grid,

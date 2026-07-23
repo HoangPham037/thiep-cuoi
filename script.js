@@ -81,9 +81,10 @@ function initStableViewport() {
 
   const setStableViewport = () => {
     const height = window.visualViewport?.height || window.innerHeight;
+    const heroHeight = Math.max(620, Math.min(height * 0.92, 760));
     root.style.setProperty("--stable-vh", `${height * 0.01}px`);
     root.style.setProperty("--stable-viewport-height", `${height}px`);
-    root.style.setProperty("--stable-hero-height", `${height * 0.92}px`);
+    root.style.setProperty("--stable-hero-height", `${heroHeight}px`);
   };
 
   setStableViewport();
@@ -165,11 +166,9 @@ function initCover() {
 
     window.setTimeout(() => {
       cover.classList.add("is-hidden");
-      document.body.style.overflow = "";
       window.dispatchEvent(new Event("invite-opened"));
     }, 1250);
   });
-  document.body.style.overflow = "hidden";
 }
 
 function initCountdown() {
