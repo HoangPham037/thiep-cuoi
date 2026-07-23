@@ -76,6 +76,23 @@ let weddingAudio;
 let galleryActiveIndex = 1;
 const RSVP_STORAGE_KEY = "wedding-rsvp-list";
 
+function initStableViewport() {
+  const root = document.documentElement;
+
+  const setStableViewport = () => {
+    const height = window.visualViewport?.height || window.innerHeight;
+    root.style.setProperty("--stable-vh", `${height * 0.01}px`);
+    root.style.setProperty("--stable-viewport-height", `${height}px`);
+    root.style.setProperty("--stable-hero-height", `${height * 0.92}px`);
+  };
+
+  setStableViewport();
+  window.addEventListener("orientationchange", () => {
+    window.setTimeout(setStableViewport, 260);
+  });
+  window.addEventListener("pageshow", setStableViewport);
+}
+
 function setText(selector, value) {
   const el = $(selector);
   if (el) el.textContent = value;
@@ -761,6 +778,7 @@ async function playWeddingMusic() {
   }
 }
 
+initStableViewport();
 initContent();
 initMusicButton();
 initCover();

@@ -12,6 +12,9 @@
   --serif: "Playfair Display", Georgia, "Times New Roman", serif;
   --sans: "Manrope", "Segoe UI", Arial, sans-serif;
   --shadow: 0 24px 70px rgba(88, 54, 41, 0.14);
+  --stable-vh: 1vh;
+  --stable-viewport-height: 100vh;
+  --stable-hero-height: 92vh;
 }
 
 * {
@@ -39,7 +42,7 @@ body {
   font-family: var(--sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  touch-action: pan-y;
+  overscroll-behavior-y: none;
 }
 
 body::before {
@@ -1816,11 +1819,13 @@ a {
   }
 
   .hero {
-    min-height: 92svh;
+    height: var(--stable-hero-height);
+    min-height: var(--stable-hero-height);
+    max-height: var(--stable-hero-height);
   }
 
   .hero img {
-    object-position: center top;
+    object-position: center 18%;
   }
 
   .intro__grid,
