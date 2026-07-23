@@ -66,7 +66,11 @@ a {
   place-items: center;
   min-height: 100vh;
   overflow: hidden;
-  background: #15120f;
+  padding: clamp(18px, 5vw, 56px);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(100, 143, 86, 0.2), transparent 24%),
+    radial-gradient(circle at 86% 86%, rgba(213, 175, 120, 0.08), transparent 20%),
+    linear-gradient(180deg, #092414 0%, #12371f 100%);
   transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
@@ -76,23 +80,98 @@ a {
   pointer-events: none;
 }
 
-.cover__photo {
+.cover::before,
+.cover::after {
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(20, 15, 11, 0.22), rgba(20, 15, 11, 0.56)),
-    url("assets/images/PQT01373-.jpg") center 32% / cover;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cover::before {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: radial-gradient(circle at 50% 44%, black, transparent 72%);
+  opacity: 0.24;
+}
+
+.cover::after {
+  background: radial-gradient(circle at 50% 45%, transparent 0 32%, rgba(3, 17, 9, 0.28) 76%);
+}
+
+.cover__symbols {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cover__symbols span {
+  position: absolute;
+  left: var(--x);
+  bottom: -14vh;
+  color: rgba(210, 229, 201, 0.34);
+  font-family: var(--serif);
+  font-size: var(--size);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(210, 229, 201, 0.2);
+  animation: cover-symbol-rise var(--duration) linear infinite;
+  animation-delay: var(--delay);
+}
+
+.cover__card {
+  position: relative;
+  z-index: 2;
+  width: min(920px, 94vw);
+  aspect-ratio: 16 / 8.6;
+  overflow: hidden;
+  border: 1px solid rgba(223, 238, 215, 0.26);
+  border-radius: 8px;
+  background: #17391f;
+  box-shadow:
+    0 26px 90px rgba(0, 0, 0, 0.34),
+    0 0 56px rgba(185, 220, 174, 0.18);
+}
+
+.cover__photo,
+.cover__photo img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.cover__photo img {
+  object-fit: cover;
+  object-position: center 38%;
   transform: scale(1.02);
 }
 
+.cover__photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(8, 28, 15, 0.1), rgba(8, 28, 15, 0.72) 72%),
+    linear-gradient(180deg, rgba(9, 27, 14, 0.06), rgba(9, 27, 14, 0.62));
+}
+
 .cover__content {
-  position: relative;
-  max-width: 620px;
-  padding: 32px;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  max-width: none;
+  padding: clamp(28px, 5vw, 58px);
   color: white;
   text-align: center;
 }
 
-.cover h1,
 .hero h1 {
   margin: 8px 0 14px;
   font-family: var(--serif);
@@ -101,9 +180,43 @@ a {
   line-height: 1;
 }
 
+.cover h1 {
+  max-width: 720px;
+  margin: 10px 0 12px;
+  font-family: var(--serif);
+  font-size: clamp(44px, 8vw, 100px);
+  font-weight: 500;
+  line-height: 0.96;
+  text-wrap: balance;
+  text-shadow: 0 3px 24px rgba(0, 0, 0, 0.36);
+}
+
 .cover p,
 .hero p {
   margin: 0 0 24px;
+}
+
+.cover #coverDate {
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes cover-symbol-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(-18px, 0, 0) rotate(-8deg) scale(0.82);
+  }
+
+  12%,
+  78% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(18px, -122vh, 0) rotate(10deg) scale(1.14);
+  }
 }
 
 .topbar {
@@ -1347,6 +1460,31 @@ a {
 }
 
 @media (max-width: 760px) {
+  .cover {
+    padding: 18px;
+  }
+
+  .cover__card {
+    width: min(420px, 92vw);
+    aspect-ratio: 4 / 5.7;
+  }
+
+  .cover__photo img {
+    object-position: center top;
+  }
+
+  .cover__content {
+    padding: 28px 20px;
+  }
+
+  .cover h1 {
+    font-size: clamp(42px, 15vw, 68px);
+  }
+
+  .cover__symbols span {
+    font-size: calc(var(--size) * 0.78);
+  }
+
   .topbar {
     align-items: flex-start;
     flex-direction: column;
@@ -1463,6 +1601,12 @@ a {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .cover__symbols span {
+    animation: none;
+    opacity: 0.42;
+    transform: translateY(-50vh);
   }
 
   .reveal {
