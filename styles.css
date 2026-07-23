@@ -113,7 +113,7 @@ a {
 .cover__symbols span {
   position: absolute;
   left: var(--x);
-  bottom: -14vh;
+  bottom: -18vh;
   color: rgba(210, 229, 201, 0.34);
   font-family: var(--serif);
   font-size: var(--size);
@@ -147,7 +147,7 @@ a {
 
 .cover__photo img {
   object-fit: cover;
-  object-position: center 38%;
+  object-position: center top;
   transform: scale(1.02);
 }
 
@@ -205,17 +205,20 @@ a {
 @keyframes cover-symbol-rise {
   0% {
     opacity: 0;
-    transform: translate3d(-18px, 0, 0) rotate(-8deg) scale(0.82);
+    transform: translate3d(0, 0, 0) rotate(-4deg) scale(0.82);
   }
 
-  12%,
-  78% {
+  14% {
     opacity: 1;
+  }
+
+  78% {
+    opacity: 0.78;
   }
 
   100% {
     opacity: 0;
-    transform: translate3d(18px, -122vh, 0) rotate(10deg) scale(1.14);
+    transform: translate3d(0, -128vh, 0) rotate(4deg) scale(1.12);
   }
 }
 
