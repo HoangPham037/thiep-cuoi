@@ -258,6 +258,7 @@ function initGallerySlider() {
   let startX = 0;
   let autoTimer;
   const autoDelay = 3600;
+  const allowDrag = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   const normalizeIndex = (index) => {
     if (index < 0) return slides.length - 1;
@@ -309,27 +310,29 @@ function initGallerySlider() {
     goTo(galleryActiveIndex + 1);
     startAuto();
   });
-  viewport.addEventListener("pointerenter", stopAuto);
-  viewport.addEventListener("pointerleave", () => {
-    viewport.classList.remove("is-dragging");
-    startAuto();
-  });
-  viewport.addEventListener("pointerdown", (event) => {
-    startX = event.clientX;
-    viewport.classList.add("is-dragging");
-    viewport.setPointerCapture?.(event.pointerId);
-    stopAuto();
-  });
-  viewport.addEventListener("pointerup", (event) => {
-    const delta = event.clientX - startX;
-    if (Math.abs(delta) > 40) goTo(galleryActiveIndex + (delta < 0 ? 1 : -1));
-    viewport.classList.remove("is-dragging");
-    startAuto();
-  });
-  viewport.addEventListener("pointercancel", () => {
-    viewport.classList.remove("is-dragging");
-    startAuto();
-  });
+  if (allowDrag) {
+    viewport.addEventListener("pointerenter", stopAuto);
+    viewport.addEventListener("pointerleave", () => {
+      viewport.classList.remove("is-dragging");
+      startAuto();
+    });
+    viewport.addEventListener("pointerdown", (event) => {
+      startX = event.clientX;
+      viewport.classList.add("is-dragging");
+      viewport.setPointerCapture?.(event.pointerId);
+      stopAuto();
+    });
+    viewport.addEventListener("pointerup", (event) => {
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 40) goTo(galleryActiveIndex + (delta < 0 ? 1 : -1));
+      viewport.classList.remove("is-dragging");
+      startAuto();
+    });
+    viewport.addEventListener("pointercancel", () => {
+      viewport.classList.remove("is-dragging");
+      startAuto();
+    });
+  }
 
   updateSlides();
   startAuto();
