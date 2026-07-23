@@ -12,9 +12,6 @@
   --serif: "Playfair Display", Georgia, "Times New Roman", serif;
   --sans: "Manrope", "Segoe UI", Arial, sans-serif;
   --shadow: 0 24px 70px rgba(88, 54, 41, 0.14);
-  --stable-vh: 1vh;
-  --stable-viewport-height: 100vh;
-  --stable-hero-height: 92vh;
 }
 
 * {
@@ -1822,9 +1819,7 @@ a {
   }
 
   .hero {
-    height: var(--stable-hero-height);
-    min-height: var(--stable-hero-height);
-    max-height: var(--stable-hero-height);
+    min-height: 92svh;
   }
 
   .hero img {
