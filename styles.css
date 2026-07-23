@@ -25,16 +25,8 @@ html {
   width: 100%;
   overflow-x: hidden;
   scroll-behavior: smooth;
-  scrollbar-width: none;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  display: none;
 }
 
 body {
@@ -42,6 +34,8 @@ body {
   max-width: 100%;
   margin: 0;
   overflow-x: hidden;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
   background:
     radial-gradient(circle at 14% 12%, rgba(82, 113, 67, 0.13), transparent 25%),
     radial-gradient(circle at 86% 24%, rgba(213, 175, 120, 0.12), transparent 25%),
@@ -547,6 +541,7 @@ a {
   align-items: end;
   overflow: hidden;
   background: #171310;
+  touch-action: pan-y;
 }
 
 .hero picture,
@@ -555,6 +550,8 @@ a {
   position: absolute;
   inset: 0;
   height: 100%;
+  pointer-events: none;
+  user-select: none;
 }
 
 .hero img {
@@ -1559,7 +1556,7 @@ a {
   overflow: hidden;
   perspective: 1200px;
   cursor: grab;
-  touch-action: auto;
+  touch-action: pan-y;
   user-select: none;
 }
 
@@ -1828,7 +1825,6 @@ a {
     height: var(--stable-hero-height);
     min-height: var(--stable-hero-height);
     max-height: var(--stable-hero-height);
-    contain: layout paint;
   }
 
   .hero img {

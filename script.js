@@ -789,4 +789,3 @@ initGallery();
 initGallerySlider();
 initRsvp();
 initScrollAnimations();
-initIdleAutoScroll();
