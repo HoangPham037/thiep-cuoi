@@ -376,7 +376,6 @@ function initScrollAnimations() {
         if (entry.isIntersecting) {
           entry.target.classList.remove("is-above", "is-below");
           entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
           return;
         }
 
