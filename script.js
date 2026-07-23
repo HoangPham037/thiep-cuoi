@@ -81,8 +81,27 @@ function setText(selector, value) {
   if (el) el.textContent = value;
 }
 
+function setCoverNames() {
+  const el = $("#coverNames");
+  if (!el) return;
+
+  const groom = document.createElement("span");
+  groom.className = "cover__name-line";
+  groom.textContent = wedding.groom;
+
+  const amp = document.createElement("span");
+  amp.className = "cover__amp";
+  amp.textContent = "&";
+
+  const bride = document.createElement("span");
+  bride.className = "cover__name-line";
+  bride.textContent = wedding.bride;
+
+  el.replaceChildren(groom, amp, bride);
+}
+
 function initContent() {
-  setText("#coverNames", names);
+  setCoverNames();
   setText("#coverDate", wedding.displayDate);
   setText("#navNames", names);
   setText("#heroNames", names);
@@ -118,11 +137,20 @@ function initContent() {
 
 function initCover() {
   const cover = $("#cover");
+  let isOpening = false;
+
   $("#openInvite").addEventListener("click", () => {
+    if (isOpening) return;
+    isOpening = true;
+
     playWeddingMusic();
-    cover.classList.add("is-hidden");
-    document.body.style.overflow = "";
-    window.dispatchEvent(new Event("invite-opened"));
+    cover.classList.add("is-opening");
+
+    window.setTimeout(() => {
+      cover.classList.add("is-hidden");
+      document.body.style.overflow = "";
+      window.dispatchEvent(new Event("invite-opened"));
+    }, 1250);
   });
   document.body.style.overflow = "hidden";
 }
@@ -332,6 +360,7 @@ function initScrollAnimations() {
         if (entry.isIntersecting) {
           entry.target.classList.remove("is-above", "is-below");
           entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
           return;
         }
 
@@ -348,6 +377,9 @@ function initScrollAnimations() {
 }
 
 function initIdleAutoScroll() {
+  const allowAutoScroll = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 761px)").matches;
+  if (!allowAutoScroll) return;
+
   const idleDelay = 4200;
   const speed = 0.035;
   let idleTimer;
