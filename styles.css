@@ -20,7 +20,7 @@
 
 html {
   width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -30,7 +30,7 @@ body {
   width: 100%;
   max-width: 100%;
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
   overscroll-behavior-y: auto;
   -webkit-overflow-scrolling: touch;
   background:
@@ -41,6 +41,13 @@ body {
   font-family: var(--sans);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+@supports not (overflow: clip) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
 }
 
 body::before {
@@ -1778,6 +1785,14 @@ a {
 }
 
 @media (max-width: 760px) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body::before {
+    content: none;
+  }
+
   .cover {
     padding: 18px;
   }
@@ -1814,8 +1829,16 @@ a {
   }
 
   .reveal {
-    transition-duration: 0.46s;
+    opacity: 1;
+    transform: none;
+    transition: none;
     will-change: auto;
+  }
+
+  .reveal.is-above,
+  .reveal.is-below,
+  .reveal.is-visible {
+    transform: none;
   }
 
   .hero {
@@ -1904,6 +1927,8 @@ a {
 
   .gallery__viewport {
     height: 420px;
+    cursor: default;
+    touch-action: pan-y pinch-zoom;
   }
 
   .gallery__slide {
