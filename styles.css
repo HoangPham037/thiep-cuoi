@@ -1829,15 +1829,22 @@ a {
   }
 
   .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(0.99);
+    transition: opacity 0.46s ease, transform 0.46s cubic-bezier(0.2, 0.8, 0.2, 1);
     will-change: auto;
   }
 
-  .reveal.is-above,
-  .reveal.is-below,
+  .reveal.is-above {
+    transform: translate3d(0, -22px, 0) scale(0.99);
+  }
+
+  .reveal.is-below {
+    transform: translate3d(0, 22px, 0) scale(0.99);
+  }
+
   .reveal.is-visible {
+    opacity: 1;
     transform: none;
   }
 
